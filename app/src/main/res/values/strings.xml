@@ -2,7 +2,21 @@
 <resources>
 
     <string name="app_name">Khan Academy - Learn Anything</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="home_nav_drawer_items">
+        <!--<item>Home</item>-->
+        <item>Math</item>
+        <!--<item>Science</item>-->
+        <!--<item>Economics and finance</item>-->
+        <!--<item>Arts and humanities</item>-->
+        <!--<item>Computing</item>-->
+        <!--<item>Test prep</item>-->
+        <!--<item>Partner content</item>-->
+    </string-array>
+
+    <array name="home_nav_drawer_icons">
+        <item>@drawable/ic_math</item>
+    </array>
 
 </resources>
