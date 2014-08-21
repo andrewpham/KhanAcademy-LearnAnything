@@ -1,20 +1,25 @@
 package com.andrewpham.android.khanacademy_learnanything.models;
 
-/**
- * Created by Andrew on 19/08/2014.
- */
 public class NavDrawerItem {
 
     private String mTitle;
     private int mIcon;
+    private String mCount = "0";
+    private boolean mIsCounterVisible = false;
 
     public NavDrawerItem() {
-
     }
 
     public NavDrawerItem(String title, int icon) {
-        mTitle = title;
-        mIcon = icon;
+        this.mTitle = title;
+        this.mIcon = icon;
+    }
+
+    public NavDrawerItem(String title, int icon, boolean isCounterVisible, String count) {
+        this.mTitle = title;
+        this.mIcon = icon;
+        this.mIsCounterVisible = isCounterVisible;
+        this.mCount = count;
     }
 
     public String getTitle() {
@@ -22,7 +27,7 @@ public class NavDrawerItem {
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        this.mTitle = title;
     }
 
     public int getIcon() {
@@ -30,7 +35,23 @@ public class NavDrawerItem {
     }
 
     public void setIcon(int icon) {
-        mIcon = icon;
+        this.mIcon = icon;
+    }
+
+    public String getCount() {
+        return mCount;
+    }
+
+    public void setCount(String count) {
+        mCount = count;
+    }
+
+    public boolean isCounterVisible() {
+        return mIsCounterVisible;
+    }
+
+    public void setCounterVisible(boolean isCounterVisible) {
+        mIsCounterVisible = isCounterVisible;
     }
 
 }

@@ -13,17 +13,14 @@ import com.andrewpham.android.khanacademy_learnanything.models.NavDrawerItem;
 
 import java.util.ArrayList;
 
-/**
- * Created by Andrew on 19/08/2014.
- */
 public class NavDrawerListAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<NavDrawerItem> mNavDrawerItems;
 
     public NavDrawerListAdapter(Context context, ArrayList<NavDrawerItem> navDrawerItems) {
-        mContext = context;
-        mNavDrawerItems = navDrawerItems;
+        this.mContext = context;
+        this.mNavDrawerItems = navDrawerItems;
     }
 
     @Override
@@ -32,28 +29,28 @@ public class NavDrawerListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
-        return mNavDrawerItems.get(i);
+    public Object getItem(int position) {
+        return mNavDrawerItems.get(position);
     }
 
     @Override
-    public long getItemId(int i) {
-        return i;
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater)
                     mContext.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.drawer_list_item, null);
+            convertView = inflater.inflate(R.layout.drawer_list_item, null);
         }
 
-        ImageView icon = (ImageView) view.findViewById(R.id.icon);
-        icon.setImageResource(mNavDrawerItems.get(i).getIcon());
-        TextView title = (TextView) view.findViewById(R.id.title);
-        title.setText(mNavDrawerItems.get(i).getTitle());
+        ImageView icon = (ImageView) convertView.findViewById(R.id.icon);
+        icon.setImageResource(mNavDrawerItems.get(position).getIcon());
+        TextView title = (TextView) convertView.findViewById(R.id.title);
+        title.setText(mNavDrawerItems.get(position).getTitle());
 
-        return view;
+        return convertView;
     }
 }
