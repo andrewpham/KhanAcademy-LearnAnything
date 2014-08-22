@@ -8,7 +8,7 @@
     <string-array name="home_nav_drawer_items">
         <!--<item>Home</item>-->
         <item>Math</item>
-        <item>Science</item>
+        <!--<item>Science</item>-->
         <!--<item>Economics and finance</item>-->
         <!--<item>Arts and humanities</item>-->
         <!--<item>Computing</item>-->
@@ -17,7 +17,6 @@
     </string-array>
 
     <array name="home_nav_drawer_icons">
-        <item>@drawable/ic_math</item>
         <item>@drawable/ic_math</item>
     </array>
 
