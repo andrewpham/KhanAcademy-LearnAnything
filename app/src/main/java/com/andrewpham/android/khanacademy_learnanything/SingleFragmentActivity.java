@@ -1,6 +1,5 @@
 package com.andrewpham.android.khanacademy_learnanything;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -10,7 +9,6 @@ import android.support.v4.app.FragmentManager;
  * Created by Andrew on 19/08/2014.
  */
 public abstract class SingleFragmentActivity extends FragmentActivity {
-    private ActionBar mActionBar;
 
     protected abstract Fragment createFragment();
 
@@ -32,4 +30,5 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
                     .commit();
         }
     }
+
 }

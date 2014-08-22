@@ -1,5 +1,6 @@
 package com.andrewpham.android.khanacademy_learnanything;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -18,22 +19,21 @@ import java.util.ArrayList;
 
 public class HomeActivity extends Activity {
 
+    private ActionBar mActionBar;
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    // nav drawer title
     private CharSequence mDrawerTitle;
 
-    // used to store app title
     private CharSequence mTitle;
 
-    // slide menu items
-    private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
+    private String[] mTopics;
+    private TypedArray mIcons;
 
-    private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter adapter;
+    private ArrayList<NavDrawerItem> mNavDrawerItems;
+    private NavDrawerListAdapter mNavDrawerListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,53 +41,42 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
 
         mTitle = mDrawerTitle = getTitle();
-
-        // load slide menu items
-        navMenuTitles = getResources().getStringArray(R.array.home_nav_drawer_items);
-
-        // nav drawer icons from resources
-        navMenuIcons = getResources()
-                .obtainTypedArray(R.array.home_nav_drawer_icons);
-
+        mTopics = getResources().getStringArray(R.array.home_nav_drawer_items);
+        mIcons = getResources().obtainTypedArray(R.array.home_nav_drawer_icons);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerList = (ListView) findViewById(R.id.drawerListView);
+        mDrawerList.setOnItemClickListener(new SlidingMenuClickListener());
 
-        navDrawerItems = new ArrayList<NavDrawerItem>();
+        mNavDrawerItems = new ArrayList<NavDrawerItem>();
 
-        // adding nav drawer items to array
-        // Home
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Find People
-
+        for (int i = 0; i < mTopics.length; i++) {
+            mNavDrawerItems.add(new NavDrawerItem(mTopics[i], mIcons.getResourceId(i, -1)));
+        }
 
         // Recycle the typed array
-        navMenuIcons.recycle();
+        mIcons.recycle();
 
-        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+        mNavDrawerListAdapter = new NavDrawerListAdapter(getApplicationContext(),
+                mNavDrawerItems);
+        mDrawerList.setAdapter(mNavDrawerListAdapter);
 
-        // setting the nav drawer list adapter
-        adapter = new NavDrawerListAdapter(getApplicationContext(),
-                navDrawerItems);
-        mDrawerList.setAdapter(adapter);
+        mActionBar = getActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setHomeButtonEnabled(true);
+        mActionBar.setDisplayShowTitleEnabled(false);
 
-        // enabling action bar app icon and behaving it as toggle button
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, //nav menu toggle icon
-                R.string.app_name, // nav drawer open - description for accessibility
-                R.string.app_name // nav drawer close - description for accessibility
-        ) {
+        mDrawerToggle = new ActionBarDrawerToggle(this,
+                mDrawerLayout,
+                R.drawable.ic_drawer,
+                R.string.app_name,
+                R.string.app_name) {
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-                // calling onPrepareOptionsMenu() to show action bar icons
+                mActionBar.setTitle(mTitle);
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
-                // calling onPrepareOptionsMenu() to hide action bar icons
+                mActionBar.setTitle(mDrawerTitle);
                 invalidateOptionsMenu();
             }
         };
@@ -95,30 +84,28 @@ public class HomeActivity extends Activity {
     }
 
     /**
-     * Slide menu item click listener
+     * Sliding menu item click listener
      */
-    private class SlideMenuClickListener implements
+    private class SlidingMenuClickListener implements
             ListView.OnItemClickListener {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // toggle nav drawer on selecting action bar app icon/title
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        // Handle action bar actions click
+
         switch (item.getItemId()) {
             case R.id.action_settings:
                 return true;
@@ -144,24 +131,16 @@ public class HomeActivity extends Activity {
         getActionBar().setTitle(mTitle);
     }
 
-    /**
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     */
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
 
 }
