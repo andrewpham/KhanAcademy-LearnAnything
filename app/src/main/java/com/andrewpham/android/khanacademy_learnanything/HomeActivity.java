@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.andrewpham.android.khanacademy_learnanything.models.NavDrawerItem;
 import java.util.ArrayList;
 
 public class HomeActivity extends Activity {
+
+    public static final String TAG = "HomeActivity";
 
     private ActionBar mActionBar;
 
@@ -35,6 +38,18 @@ public class HomeActivity extends Activity {
 
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerListAdapter mNavDrawerListAdapter;
+
+    private static final String ENDPOINT = "http://www.khanacademy.org/api/v1/";
+
+    private static final String[] TOPIC_SLUGS = new String[]{
+            "math",
+            "science",
+            "economics-finance-domain",
+            "humanities",
+            "computing",
+            "test-prep",
+            "partner-content"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +107,8 @@ public class HomeActivity extends Activity {
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            String url = ENDPOINT + "topic/" + TOPIC_SLUGS[position];
+            Log.d(TAG, url);
         }
     }
 
