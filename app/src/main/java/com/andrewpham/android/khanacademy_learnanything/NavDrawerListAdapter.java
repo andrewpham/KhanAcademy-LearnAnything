@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.andrewpham.android.khanacademy_learnanything.models.NavDrawerItem;
+import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
 
 import java.util.ArrayList;
 
