@@ -15,16 +15,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
+import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class HomeActivity extends Activity {
 
@@ -116,35 +117,15 @@ public class HomeActivity extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             String url = ENDPOINT + "topic/" + TOPIC_SLUGS[position];
             Log.d(TAG, url);
-            switch (position) {
-                case 0:
-                    ApiClient.getMathApiClient().getTopicData(new Callback<TopicData>() {
-                        @Override
-                        public void success(TopicData topicData, Response response) {
-                            for (Child child : topicData.getChildren()) {
-                                Log.d(TAG, child.getNodeSlug());
-                            }
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-
-                        }
-                    });
-                default:
-                    ApiClient.getMathApiClient().getTopicData(new Callback<TopicData>() {
-                        @Override
-                        public void success(TopicData topicData, Response response) {
-                            for (Child child : topicData.getChildren()) {
-                                Log.d(TAG, child.getNodeSlug());
-                            }
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-
-                        }
-                    });
+            try {
+                String json = getUrl(url);
+                Gson gson = new Gson();
+                TopicData topicData = gson.fromJson(json, TopicData.class);
+                for (Child child : topicData.getChildren()) {
+                    Log.d(TAG, child.getNodeSlug());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -196,6 +177,34 @@ public class HomeActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    byte[] getUrlBytes(String urlSpec) throws IOException {
+        URL url = new URL(urlSpec);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            InputStream in = connection.getInputStream();
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                return null;
+            }
+
+            int bytesRead;
+            byte[] buffer = new byte[1024];
+            while ((bytesRead = in.read(buffer)) > 0) {
+                out.write(buffer, 0, bytesRead);
+            }
+            out.close();
+            return out.toByteArray();
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    public String getUrl(String urlSpec) throws IOException {
+        return new String(getUrlBytes(urlSpec));
     }
 
 }

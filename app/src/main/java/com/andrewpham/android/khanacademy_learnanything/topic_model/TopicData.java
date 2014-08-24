@@ -16,7 +16,7 @@ public class TopicData {
     private String domainSlug;
     @SerializedName("relative_url")
     @Expose
-    private String relativeUrl;
+    private Object relativeUrl;
     @SerializedName("creation_date")
     @Expose
     private String creationDate;
@@ -25,7 +25,7 @@ public class TopicData {
     private String webUrl;
     @SerializedName("ka_url")
     @Expose
-    private String kaUrl;
+    private Object kaUrl;
     @SerializedName("translated_standalone_title")
     @Expose
     private String translatedStandaloneTitle;
@@ -103,14 +103,14 @@ public class TopicData {
     private String backgroundImageCaption;
     @SerializedName("topic_page_url")
     @Expose
-    private String topicPageUrl;
+    private Object topicPageUrl;
     @SerializedName("extended_slug")
     @Expose
     private String extendedSlug;
     @Expose
     private String slug;
     @Expose
-    private List<String> tags = new ArrayList<String>();
+    private List<Object> tags = new ArrayList<Object>();
     @Expose
     private String kind;
     @SerializedName("in_topic_browser")
@@ -152,11 +152,11 @@ public class TopicData {
         this.domainSlug = domainSlug;
     }
 
-    public String getRelativeUrl() {
+    public Object getRelativeUrl() {
         return relativeUrl;
     }
 
-    public void setRelativeUrl(String relativeUrl) {
+    public void setRelativeUrl(Object relativeUrl) {
         this.relativeUrl = relativeUrl;
     }
 
@@ -176,11 +176,11 @@ public class TopicData {
         this.webUrl = webUrl;
     }
 
-    public String getKaUrl() {
+    public Object getKaUrl() {
         return kaUrl;
     }
 
-    public void setKaUrl(String kaUrl) {
+    public void setKaUrl(Object kaUrl) {
         this.kaUrl = kaUrl;
     }
 
@@ -400,11 +400,11 @@ public class TopicData {
         this.backgroundImageCaption = backgroundImageCaption;
     }
 
-    public String getTopicPageUrl() {
+    public Object getTopicPageUrl() {
         return topicPageUrl;
     }
 
-    public void setTopicPageUrl(String topicPageUrl) {
+    public void setTopicPageUrl(Object topicPageUrl) {
         this.topicPageUrl = topicPageUrl;
     }
 
@@ -424,11 +424,11 @@ public class TopicData {
         this.slug = slug;
     }
 
-    public List<String> getTags() {
+    public List<Object> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<Object> tags) {
         this.tags = tags;
     }
 
