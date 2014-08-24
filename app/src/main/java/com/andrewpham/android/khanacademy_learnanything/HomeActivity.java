@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -15,17 +16,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
-import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class HomeActivity extends Activity {
 
@@ -47,8 +47,6 @@ public class HomeActivity extends Activity {
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerListAdapter mNavDrawerListAdapter;
 
-    private static final String ENDPOINT = "http://www.khanacademy.org/api/v1/";
-
     private static final String[] TOPIC_SLUGS = new String[]{
             "math",
             "science",
@@ -58,6 +56,7 @@ public class HomeActivity extends Activity {
             "test-prep",
             "partner-content"
     };
+    private String mTopicSlug;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,18 +114,8 @@ public class HomeActivity extends Activity {
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String url = ENDPOINT + "topic/" + TOPIC_SLUGS[position];
-            Log.d(TAG, url);
-            try {
-                String json = getUrl(url);
-                Gson gson = new Gson();
-                TopicData topicData = gson.fromJson(json, TopicData.class);
-                for (Child child : topicData.getChildren()) {
-                    Log.d(TAG, child.getNodeSlug());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mTopicSlug = TOPIC_SLUGS[position];
+            new FetchItemsTask().execute();
         }
     }
 
@@ -179,32 +168,24 @@ public class HomeActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    byte[] getUrlBytes(String urlSpec) throws IOException {
-        URL url = new URL(urlSpec);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            ApiClient.get().getTopicData(mTopicSlug, new Callback<TopicData>() {
+                @Override
+                public void success(TopicData topicData, Response response) {
+                    for (Child child : topicData.getChildren()) {
+                        Log.d(TAG, child.getTranslatedTitle());
+                    }
+                }
 
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            InputStream in = connection.getInputStream();
+                @Override
+                public void failure(RetrofitError error) {
 
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return null;
-            }
-
-            int bytesRead;
-            byte[] buffer = new byte[1024];
-            while ((bytesRead = in.read(buffer)) > 0) {
-                out.write(buffer, 0, bytesRead);
-            }
-            out.close();
-            return out.toByteArray();
-        } finally {
-            connection.disconnect();
+                }
+            });
+            return null;
         }
-    }
-
-    public String getUrl(String urlSpec) throws IOException {
-        return new String(getUrlBytes(urlSpec));
     }
 
 }
