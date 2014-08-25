@@ -2,37 +2,26 @@ package com.andrewpham.android.khanacademy_learnanything;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
-import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
-import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
 
 import java.util.ArrayList;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+public class SubjectActivity extends Activity {
 
-public class HomeActivity extends Activity {
-
-    public static final String TAG = "HomeActivity";
-    public static final String EXTRA_TRANSLATED_TITLES = "com.andrewpham.android.khanacademy_learnanything.translated_titles";
-    public static final String EXTRA_NODE_SLUGS = "com.andrewpham.android.khanacademy_learnanything.node_slugs";
+    public static final String TAG = "SubjectActivity";
 
     private ActionBar mActionBar;
 
@@ -50,26 +39,21 @@ public class HomeActivity extends Activity {
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerListAdapter mNavDrawerListAdapter;
 
-    private static final String[] TOPIC_SLUGS = new String[]{
-            "math",
-            "science",
-            "economics-finance-domain",
-            "humanities",
-            "computing",
-            "test-prep",
-            "partner-content"
-    };
-    private String mTopicSlug;
-    private static Context mContext;
+    private ArrayList<String> mTranslatedTitles;
+    private ArrayList<String> mNodeSlugs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getApplicationContext();
+        Bundle bundle = this.getIntent().getExtras();
+        mTranslatedTitles = bundle.getStringArrayList(HomeActivity.EXTRA_TRANSLATED_TITLES);
+        Log.d(TAG, mTranslatedTitles.toString());
+        mNodeSlugs = bundle.getStringArrayList(HomeActivity.EXTRA_NODE_SLUGS);
+        Log.d(TAG, mNodeSlugs.toString());
         setContentView(R.layout.activity_home);
 
         mTitle = mDrawerTitle = getTitle();
-        mTopics = getResources().getStringArray(R.array.home_nav_drawer_items);
+        mTopics = mTranslatedTitles.toArray(new String[mTranslatedTitles.size()]);
         mIcons = getResources().obtainTypedArray(R.array.home_nav_drawer_icons);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerList = (ListView) findViewById(R.id.drawerListView);
@@ -123,8 +107,7 @@ public class HomeActivity extends Activity {
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mTopicSlug = TOPIC_SLUGS[position];
-            new FetchItemsTask().execute();
+
         }
     }
 
@@ -175,35 +158,6 @@ public class HomeActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            final ArrayList<String> translatedTitles = new ArrayList<String>();
-            final ArrayList<String> nodeSlugs = new ArrayList<String>();
-            ApiClient.get().getTopicData(mTopicSlug, new Callback<TopicData>() {
-                @Override
-                public void success(TopicData topicData, Response response) {
-                    for (Child child : topicData.getChildren()) {
-                        translatedTitles.add(child.getTranslatedTitle());
-                        nodeSlugs.add(child.getNodeSlug());
-                    }
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArrayList(EXTRA_TRANSLATED_TITLES, translatedTitles);
-                    bundle.putStringArrayList(EXTRA_NODE_SLUGS, nodeSlugs);
-                    Intent i = new Intent(mContext, SubjectActivity.class);
-                    i.putExtras(bundle);
-                    startActivity(i);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
-            return null;
-        }
     }
 
 }

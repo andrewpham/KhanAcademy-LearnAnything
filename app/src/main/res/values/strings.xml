@@ -18,7 +18,6 @@
 
     <array name="home_nav_drawer_icons">
         <item>@drawable/ic_math</item>
-        <item>@drawable/ic_math</item>
     </array>
 
 </resources>
