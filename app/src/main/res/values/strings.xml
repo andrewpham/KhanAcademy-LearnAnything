@@ -17,7 +17,7 @@
     </string-array>
 
     <array name="home_nav_drawer_icons">
-        <item>@drawable/ic_math</item>
+        <item>@drawable/ic_menu_add</item>
     </array>
 
 </resources>

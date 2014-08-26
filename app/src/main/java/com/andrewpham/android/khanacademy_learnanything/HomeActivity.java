@@ -78,11 +78,7 @@ public class HomeActivity extends Activity {
         mNavDrawerItems = new ArrayList<NavDrawerItem>();
 
         for (int i = 0; i < mTopics.length; i++) {
-            if (i % 2 == 0) {
-                mNavDrawerItems.add(new NavDrawerItem(mTopics[i], mIcons.getResourceId(0, -1)));
-            } else {
-                mNavDrawerItems.add(new NavDrawerItem(mTopics[i], -1));
-            }
+            mNavDrawerItems.add(new NavDrawerItem(mTopics[i], mIcons.getResourceId(0, -1)));
         }
 
         // Recycle the typed array
