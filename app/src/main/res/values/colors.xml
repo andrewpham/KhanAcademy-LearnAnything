@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="actionbar_background">#1c758a</color>
+    <color name="actionbar_tab_background">#644172</color>
     <color name="list_item_title">#fff</color>
     <color name="list_background">#699c52</color>
     <color name="list_background_pressed">#94424f</color>

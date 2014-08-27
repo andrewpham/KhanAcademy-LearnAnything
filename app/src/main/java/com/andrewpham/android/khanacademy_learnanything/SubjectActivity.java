@@ -1,12 +1,14 @@
 package com.andrewpham.android.khanacademy_learnanything;
 
 import android.app.ActionBar;
-import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -15,11 +17,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.andrewpham.android.khanacademy_learnanything.adapter.TabsPagerAdapter;
 import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
 
 import java.util.ArrayList;
 
-public class SubjectActivity extends Activity {
+public class SubjectActivity extends FragmentActivity
+        implements ActionBar.TabListener {
 
     public static final String TAG = "SubjectActivity";
 
@@ -42,6 +46,9 @@ public class SubjectActivity extends Activity {
     private ArrayList<String> mTranslatedTitles;
     private ArrayList<String> mNodeSlugs;
 
+    private ViewPager mViewPager;
+    private TabsPagerAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +57,7 @@ public class SubjectActivity extends Activity {
         Log.d(TAG, mTranslatedTitles.toString());
         mNodeSlugs = bundle.getStringArrayList(HomeActivity.EXTRA_NODE_SLUGS);
         Log.d(TAG, mNodeSlugs.toString());
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_subject);
 
         mTitle = mDrawerTitle = getTitle();
         mTopics = mTranslatedTitles.toArray(new String[mTranslatedTitles.size()]);
@@ -72,10 +79,36 @@ public class SubjectActivity extends Activity {
                 mNavDrawerItems);
         mDrawerList.setAdapter(mNavDrawerListAdapter);
 
+        // Initialization
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mActionBar.setSelectedNavigationItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mActionBar = getActionBar();
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), mTranslatedTitles.size());
+
+        // Initializations with ViewPager
+        mViewPager.setAdapter(mAdapter);
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.actionbar_background)));
+        mActionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.actionbar_tab_background)));
+
+        // Initializations with Navigation Drawer
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
-        mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.actionbar_background)));
         mActionBar.setDisplayShowTitleEnabled(false);
 
         mDrawerToggle = new ActionBarDrawerToggle(this,
@@ -94,6 +127,27 @@ public class SubjectActivity extends Activity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        // Adding tabs
+        for (String tab : mTopics) {
+            mActionBar.addTab(mActionBar.newTab().setText(tab)
+                    .setTabListener(this));
+        }
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
     }
 
     /**
@@ -103,7 +157,7 @@ public class SubjectActivity extends Activity {
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            mViewPager.setCurrentItem(position);
         }
     }
 
