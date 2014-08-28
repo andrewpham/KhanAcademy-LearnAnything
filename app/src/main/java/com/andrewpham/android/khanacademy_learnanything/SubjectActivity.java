@@ -98,7 +98,7 @@ public class SubjectActivity extends FragmentActivity
             }
         });
         mActionBar = getActionBar();
-        mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), mTranslatedTitles.size());
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), mTranslatedTitles.size(), mNodeSlugs);
 
         // Initializations with ViewPager
         mViewPager.setAdapter(mAdapter);
