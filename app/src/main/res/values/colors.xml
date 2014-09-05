@@ -6,4 +6,5 @@
     <color name="list_background">#699c52</color>
     <color name="list_background_pressed">#94424f</color>
     <color name="list_divider">#fff</color>
+    <color name="grid_border">#000000</color>
 </resources>
