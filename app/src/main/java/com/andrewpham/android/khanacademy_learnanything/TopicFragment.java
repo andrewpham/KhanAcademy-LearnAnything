@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
@@ -28,7 +30,8 @@ public class TopicFragment extends Fragment {
 
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
-    private String[] mNodeSlugs;
+    private ArrayList<String> mNodeSlugs;
+    ListView mListView;
 
     public static final TopicFragment newInstance(String nodeSlug) {
         TopicFragment fragment = new TopicFragment();
@@ -54,25 +57,36 @@ public class TopicFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_topic, container, false);
         new FetchItemsTask().execute();
 
+        mListView = (ListView) v.findViewById(R.id.listView);
+        setupAdapter();
+
         return v;
+    }
+
+    void setupAdapter() {
+        if (getActivity() == null || mListView == null) return;
+
+        if (mNodeSlugs != null) {
+            mListView.setAdapter(new ItemAdapter(mNodeSlugs));
+        } else {
+            mListView.setAdapter(null);
+        }
     }
 
     private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             final ArrayList<String> nodeSlugs = new ArrayList<String>();
-            final ArrayList<String> titles = new ArrayList<String>();
-            final ArrayList<String> descriptions = new ArrayList<String>();
             ApiClient.get().getTopicData(mNodeSlug, new Callback<TopicData>() {
                 @Override
                 public void success(TopicData topicData, Response response) {
                     for (Child child : topicData.getChildren()) {
-                        String nodeSlug = child.getNodeSlug();
+                        final String nodeSlug = child.getNodeSlug();
                         nodeSlugs.add(nodeSlug);
-                        Log.d(TAG, nodeSlug);
                     }
-                    mNodeSlugs = nodeSlugs.toArray(new String[nodeSlugs.size()]);
-                    Log.d(TAG, Arrays.toString(mNodeSlugs));
+                    mNodeSlugs = nodeSlugs;
+
+                    Log.d(TAG, Arrays.toString(mNodeSlugs.toArray(new String[mNodeSlugs.size()])));
                 }
 
                 @Override
@@ -84,27 +98,23 @@ public class TopicFragment extends Fragment {
         }
     }
 
-//
-//    private class GalleryItemAdapter extends ArrayAdapter<String> {
-//        public GalleryItemAdapter(ArrayList<String> items) {
-//            super(getActivity(), 0, items);
-//        }
-//
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//            if (convertView == null) {
-//                convertView = getActivity().getLayoutInflater()
-//                        .inflate(R.layout.fragment_topic, parent, false);
-//            }
-//
-//            String item = getItem(position);
-//            TextView textView = (TextView) convertView.findViewById(R.id.title);
-//            TextView textView2 = (TextView) convertView.findViewById(R.id.description);
-//            textView.setText(titles.get(item));
-//            textView2.setText(descriptions.get(item));
-//
-//            return convertView;
-//        }
-//    }
+    private class ItemAdapter extends ArrayAdapter<String> {
+        public ItemAdapter(ArrayList<String> items) {
+            super(getActivity(), 0, items);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater()
+                        .inflate(R.layout.subtopic_list_item, parent, false);
+            }
+
+//            TextView title = (TextView) convertView.findViewById(R.id.title);
+//            TextView description = (TextView) convertView.findViewById(R.id.description);
+
+            return convertView;
+        }
+    }
 
 }
