@@ -31,6 +31,8 @@ public class TopicFragment extends Fragment {
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
     private ArrayList<String> mNodeSlugs;
+    private ArrayList<String> mTitles = new ArrayList<String>();
+    private ArrayList<String> mDescriptions = new ArrayList<String>();
     ListView mListView;
 
     public static final TopicFragment newInstance(String nodeSlug) {
@@ -83,10 +85,22 @@ public class TopicFragment extends Fragment {
                     for (Child child : topicData.getChildren()) {
                         final String nodeSlug = child.getNodeSlug();
                         nodeSlugs.add(nodeSlug);
+                        ApiClient.get().getTopicData(nodeSlug, new Callback<TopicData>() {
+                            @Override
+                            public void success(TopicData topicData, Response response) {
+                                mTitles.add(topicData.getTitle());
+                                Log.d(TAG, Arrays.toString(mTitles.toArray(new String[mTitles.size()])));
+                                mDescriptions.add(topicData.getDescription());
+                                Log.d(TAG, Arrays.toString(mDescriptions.toArray(new String[mDescriptions.size()])));
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+
+                            }
+                        });
                     }
                     mNodeSlugs = nodeSlugs;
-
-                    Log.d(TAG, Arrays.toString(mNodeSlugs.toArray(new String[mNodeSlugs.size()])));
                 }
 
                 @Override
