@@ -3,19 +3,18 @@ package com.andrewpham.android.khanacademy_learnanything;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -31,8 +30,8 @@ public class TopicFragment extends Fragment {
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
     private ArrayList<String> mNodeSlugs;
-    private ArrayList<String> mTitles = new ArrayList<String>();
-    private ArrayList<String> mDescriptions = new ArrayList<String>();
+    private ArrayList<String> mTitles;
+    private ArrayList<String> mDescriptions;
     ListView mListView;
 
     public static final TopicFragment newInstance(String nodeSlug) {
@@ -69,7 +68,7 @@ public class TopicFragment extends Fragment {
         if (getActivity() == null || mListView == null) return;
 
         if (mNodeSlugs != null) {
-            mListView.setAdapter(new ItemAdapter(mNodeSlugs));
+            mListView.setAdapter(new ItemAdapter(mTitles));
         } else {
             mListView.setAdapter(null);
         }
@@ -79,6 +78,8 @@ public class TopicFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
             final ArrayList<String> nodeSlugs = new ArrayList<String>();
+            final ArrayList<String> titles = new ArrayList<String>();
+            final ArrayList<String> descriptions = new ArrayList<String>();
             ApiClient.get().getTopicData(mNodeSlug, new Callback<TopicData>() {
                 @Override
                 public void success(TopicData topicData, Response response) {
@@ -88,10 +89,17 @@ public class TopicFragment extends Fragment {
                         ApiClient.get().getTopicData(nodeSlug, new Callback<TopicData>() {
                             @Override
                             public void success(TopicData topicData, Response response) {
-                                mTitles.add(topicData.getTitle());
-                                Log.d(TAG, Arrays.toString(mTitles.toArray(new String[mTitles.size()])));
-                                mDescriptions.add(topicData.getDescription());
-                                Log.d(TAG, Arrays.toString(mDescriptions.toArray(new String[mDescriptions.size()])));
+                                titles.add(topicData.getTitle());
+                                descriptions.add(topicData.getDescription());
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mNodeSlugs = nodeSlugs;
+                                        mTitles = titles;
+                                        mDescriptions = descriptions;
+                                        setupAdapter();
+                                    }
+                                });
                             }
 
                             @Override
@@ -100,7 +108,6 @@ public class TopicFragment extends Fragment {
                             }
                         });
                     }
-                    mNodeSlugs = nodeSlugs;
                 }
 
                 @Override
@@ -124,8 +131,10 @@ public class TopicFragment extends Fragment {
                         .inflate(R.layout.subtopic_list_item, parent, false);
             }
 
-//            TextView title = (TextView) convertView.findViewById(R.id.title);
-//            TextView description = (TextView) convertView.findViewById(R.id.description);
+            TextView title = (TextView) convertView.findViewById(R.id.title);
+            title.setText(mTitles.get(position));
+            TextView description = (TextView) convertView.findViewById(R.id.description);
+            description.setText(mDescriptions.get(position));
 
             return convertView;
         }
