@@ -5,9 +5,10 @@
     <color name="list_item_title">#ffffff</color>
     <color name="list_background">#699c52</color>
     <color name="list_background_pressed">#94424f</color>
-    <color name="list_divider">#ffffff</color>
+    <color name="list_divider">#5e8c4a</color>
     <color name="grid_border">#000000</color>
     <color name="fragment_background">#c78d46</color>
     <color name="fragment_text">#ffffff</color>
     <color name="list_header_background">#cf5044</color>
+    <color name="subtopic_list_divider">#b37f3f</color>
 </resources>
