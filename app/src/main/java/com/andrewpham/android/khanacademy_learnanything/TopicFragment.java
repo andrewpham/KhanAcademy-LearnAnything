@@ -1,5 +1,6 @@
 package com.andrewpham.android.khanacademy_learnanything;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +35,7 @@ public class TopicFragment extends Fragment {
     private ArrayList<String> mTitles;
     private ArrayList<String> mDescriptions;
     ListView mListView;
+    TextView mTextView;
 
     public static final TopicFragment newInstance(String nodeSlug) {
         TopicFragment fragment = new TopicFragment();
@@ -56,10 +59,13 @@ public class TopicFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_topic, container, false);
-        new FetchItemsTask().execute();
 
         mListView = (ListView) v.findViewById(R.id.listView);
-        setupAdapter();
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout headerLayout = (LinearLayout) layoutInflater.inflate(R.layout.subtopic_list_header, null, false);
+        mTextView = (TextView) headerLayout.findViewById(R.id.textView);
+        mListView.addHeaderView(headerLayout, null, false);
+        new FetchItemsTask().execute();
 
         return v;
     }
@@ -82,7 +88,13 @@ public class TopicFragment extends Fragment {
             final ArrayList<String> descriptions = new ArrayList<String>();
             ApiClient.get().getTopicData(mNodeSlug, new Callback<TopicData>() {
                 @Override
-                public void success(TopicData topicData, Response response) {
+                public void success(final TopicData topicData, Response response) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextView.setText(topicData.getDescription());
+                        }
+                    });
                     for (Child child : topicData.getChildren()) {
                         final String nodeSlug = child.getNodeSlug();
                         nodeSlugs.add(nodeSlug);

@@ -9,4 +9,5 @@
     <color name="grid_border">#000000</color>
     <color name="fragment_background">#c78d46</color>
     <color name="fragment_text">#ffffff</color>
+    <color name="list_header_background">#cf5044</color>
 </resources>
