@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentManager;
  */
 public abstract class SingleFragmentActivity extends FragmentActivity {
 
-    protected abstract Fragment createFragment();
+    protected abstract SubtopicFragment createFragment();
 
     protected int getLayoutResId() {
         return R.layout.activity_fragment;

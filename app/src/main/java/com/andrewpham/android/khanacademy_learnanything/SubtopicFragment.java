@@ -1,7 +1,6 @@
 package com.andrewpham.android.khanacademy_learnanything;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,12 +24,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Created by andrewpham on 8/26/14.
+ * Created by Andrew on 22/09/2014.
  */
-public class TopicFragment extends Fragment {
+public class SubtopicFragment extends Fragment {
 
-    public static final String TAG = "TopicFragment";
-    public static final String EXTRA_NODE_SLUG = "com.andrewpham.android.khanacademy_learnanything.node_slug";
+    public static final String TAG = "SubtopicFragment";
 
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
@@ -40,8 +38,8 @@ public class TopicFragment extends Fragment {
     ListView mListView;
     TextView mTextView;
 
-    public static final TopicFragment newInstance(String nodeSlug) {
-        TopicFragment fragment = new TopicFragment();
+    public static final SubtopicFragment newInstance(String nodeSlug) {
+        SubtopicFragment fragment = new SubtopicFragment();
         Bundle bundle = new Bundle(1);
         bundle.putString(NODE_SLUG_TAG, nodeSlug);
         fragment.setArguments(bundle);
@@ -72,11 +70,7 @@ public class TopicFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                String item = mNodeSlugs.get(pos);
-                Intent i = new Intent(getActivity(), SubtopicActivity.class);
-                i.putExtra(EXTRA_NODE_SLUG, item);
 
-                startActivity(i);
             }
         });
 
