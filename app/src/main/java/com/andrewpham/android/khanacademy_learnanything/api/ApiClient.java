@@ -1,6 +1,9 @@
 package com.andrewpham.android.khanacademy_learnanything.api;
 
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
+import com.andrewpham.android.khanacademy_learnanything.video_list_model.TopicVideo;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -25,5 +28,9 @@ public class ApiClient {
     public interface KhanAcademyService {
         @GET("/topic/{topic_slug}")
         void getTopicData(@Path("topic_slug") String topic_slug, Callback<TopicData> callback);
+
+        @GET("/topic/{topic_slug}/videos")
+        void getTopicVideos(@Path("topic_slug") String topic_slug, Callback<List<TopicVideo>> callback);
     }
+
 }

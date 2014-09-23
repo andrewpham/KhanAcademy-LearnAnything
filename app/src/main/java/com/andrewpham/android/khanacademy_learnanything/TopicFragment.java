@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,10 @@ import android.widget.TextView;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
+import com.andrewpham.android.khanacademy_learnanything.video_list_model.TopicVideo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -34,6 +37,7 @@ public class TopicFragment extends Fragment {
     private ArrayList<String> mNodeSlugs;
     private ArrayList<String> mTitles;
     private ArrayList<String> mDescriptions;
+    private ArrayList<String> mVideoCounts;
     ListView mListView;
     TextView mTextView;
 
@@ -86,6 +90,7 @@ public class TopicFragment extends Fragment {
             final ArrayList<String> nodeSlugs = new ArrayList<String>();
             final ArrayList<String> titles = new ArrayList<String>();
             final ArrayList<String> descriptions = new ArrayList<String>();
+            final ArrayList<String> videoCounts = new ArrayList<String>();
             ApiClient.get().getTopicData(mNodeSlug, new Callback<TopicData>() {
                 @Override
                 public void success(final TopicData topicData, Response response) {
@@ -103,12 +108,28 @@ public class TopicFragment extends Fragment {
                             public void success(TopicData topicData, Response response) {
                                 titles.add(topicData.getTitle());
                                 descriptions.add(topicData.getDescription());
+                                final int[] videoCount = {0};
+                                for (Child child : topicData.getChildren()) {
+                                    ApiClient.get().getTopicVideos(child.getNodeSlug(), new Callback<List<TopicVideo>>() {
+                                        @Override
+                                        public void success(List<TopicVideo> topicVideos, Response response) {
+                                            Log.d(TAG, Integer.toString(topicVideos.size()));
+                                        }
+
+                                        @Override
+                                        public void failure(RetrofitError error) {
+
+                                        }
+                                    });
+                                }
+                                videoCounts.add(Integer.toString(videoCount[0]));
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         mNodeSlugs = nodeSlugs;
                                         mTitles = titles;
                                         mDescriptions = descriptions;
+                                        mVideoCounts = videoCounts;
                                         setupAdapter();
                                     }
                                 });
@@ -145,6 +166,8 @@ public class TopicFragment extends Fragment {
 
             TextView title = (TextView) convertView.findViewById(R.id.title);
             title.setText(mTitles.get(position));
+            TextView videoCount = (TextView) convertView.findViewById(R.id.videoCount);
+            videoCount.setText(mVideoCounts.get(position));
             TextView description = (TextView) convertView.findViewById(R.id.description);
             description.setText(mDescriptions.get(position));
 
