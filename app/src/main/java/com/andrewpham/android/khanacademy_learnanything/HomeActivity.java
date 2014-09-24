@@ -188,7 +188,7 @@ public class HomeActivity extends Activity {
                     Bundle bundle = new Bundle();
                     bundle.putStringArrayList(EXTRA_TRANSLATED_TITLES, translatedTitles);
                     bundle.putStringArrayList(EXTRA_NODE_SLUGS, nodeSlugs);
-                    Intent i = new Intent(mContext, SubjectActivity.class);
+                    Intent i = new Intent(mContext, TopicActivity.class);
                     i.putExtras(bundle);
                     startActivity(i);
                 }

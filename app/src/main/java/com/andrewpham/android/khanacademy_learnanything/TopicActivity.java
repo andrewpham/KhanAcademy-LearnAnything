@@ -22,10 +22,10 @@ import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
 
 import java.util.ArrayList;
 
-public class SubjectActivity extends FragmentActivity
+public class TopicActivity extends FragmentActivity
         implements ActionBar.TabListener {
 
-    public static final String TAG = "SubjectActivity";
+    public static final String TAG = "TopicActivity";
 
     private ActionBar mActionBar;
 
@@ -57,7 +57,7 @@ public class SubjectActivity extends FragmentActivity
         Log.d(TAG, mTranslatedTitles.toString());
         mNodeSlugs = bundle.getStringArrayList(HomeActivity.EXTRA_NODE_SLUGS);
         Log.d(TAG, mNodeSlugs.toString());
-        setContentView(R.layout.activity_subject);
+        setContentView(R.layout.activity_topic);
 
         mTitle = mDrawerTitle = getTitle();
         mTopics = mTranslatedTitles.toArray(new String[mTranslatedTitles.size()]);

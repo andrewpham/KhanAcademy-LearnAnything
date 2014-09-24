@@ -16,8 +16,10 @@ import android.widget.TextView;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
+import com.andrewpham.android.khanacademy_learnanything.video_list_model.TopicVideo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -63,7 +65,7 @@ public class SubtopicFragment extends Fragment {
 
         mListView = (ListView) v.findViewById(R.id.listView);
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout headerLayout = (LinearLayout) layoutInflater.inflate(R.layout.subtopic_list_header, null, false);
+        LinearLayout headerLayout = (LinearLayout) layoutInflater.inflate(R.layout.topic_list_header, null, false);
         mTextView = (TextView) headerLayout.findViewById(R.id.textView);
         mListView.addHeaderView(headerLayout, null, false);
         new FetchItemsTask().execute();
@@ -110,6 +112,19 @@ public class SubtopicFragment extends Fragment {
                             public void success(TopicData topicData, Response response) {
                                 titles.add(topicData.getTitle());
                                 descriptions.add(topicData.getDescription());
+                                for (Child child : topicData.getChildren()) {
+                                    ApiClient.get().getTopicVideos(child.getNodeSlug(), new Callback<List<TopicVideo>>() {
+                                        @Override
+                                        public void success(List<TopicVideo> topicVideos, Response response) {
+
+                                        }
+
+                                        @Override
+                                        public void failure(RetrofitError error) {
+
+                                        }
+                                    });
+                                }
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -147,7 +162,7 @@ public class SubtopicFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater()
-                        .inflate(R.layout.subtopic_list_item, parent, false);
+                        .inflate(R.layout.topic_list_item, parent, false);
             }
 
             TextView title = (TextView) convertView.findViewById(R.id.title);

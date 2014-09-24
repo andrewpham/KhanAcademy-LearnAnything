@@ -19,6 +19,7 @@ import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -34,9 +35,10 @@ public class TopicFragment extends Fragment {
 
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
-    private ArrayList<String> mNodeSlugs;
-    private ArrayList<String> mTitles;
-    private ArrayList<String> mDescriptions;
+    private ArrayList<String> mNodeSlugs = new ArrayList<String>();
+    private HashMap<String, String> mTitles = new HashMap<String, String>();
+    private HashMap<String, String> mDescriptions = new HashMap<String, String>();
+    ItemAdapter mAdapter;
     ListView mListView;
     TextView mTextView;
 
@@ -65,14 +67,14 @@ public class TopicFragment extends Fragment {
 
         mListView = (ListView) v.findViewById(R.id.listView);
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout headerLayout = (LinearLayout) layoutInflater.inflate(R.layout.subtopic_list_header, null, false);
+        LinearLayout headerLayout = (LinearLayout) layoutInflater.inflate(R.layout.topic_list_header, null, false);
         mTextView = (TextView) headerLayout.findViewById(R.id.textView);
         mListView.addHeaderView(headerLayout, null, false);
         new FetchItemsTask().execute();
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                String item = mNodeSlugs.get(pos);
+                String item = mNodeSlugs.get(pos - 1);
                 Intent i = new Intent(getActivity(), SubtopicActivity.class);
                 i.putExtra(EXTRA_NODE_SLUG, item);
 
@@ -87,7 +89,8 @@ public class TopicFragment extends Fragment {
         if (getActivity() == null || mListView == null) return;
 
         if (mNodeSlugs != null) {
-            mListView.setAdapter(new ItemAdapter(mTitles));
+            mAdapter = new ItemAdapter(mNodeSlugs);
+            mListView.setAdapter(mAdapter);
         } else {
             mListView.setAdapter(null);
         }
@@ -96,35 +99,23 @@ public class TopicFragment extends Fragment {
     private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            final ArrayList<String> nodeSlugs = new ArrayList<String>();
-            final ArrayList<String> titles = new ArrayList<String>();
-            final ArrayList<String> descriptions = new ArrayList<String>();
             ApiClient.get().getTopicData(mNodeSlug, new Callback<TopicData>() {
                 @Override
                 public void success(final TopicData topicData, Response response) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mTextView.setText(topicData.getDescription());
-                        }
-                    });
+                    mTextView.setText(topicData.getDescription());
                     for (Child child : topicData.getChildren()) {
                         final String nodeSlug = child.getNodeSlug();
-                        nodeSlugs.add(nodeSlug);
                         ApiClient.get().getTopicData(nodeSlug, new Callback<TopicData>() {
                             @Override
-                            public void success(TopicData topicData, Response response) {
-                                titles.add(topicData.getTitle());
-                                descriptions.add(topicData.getDescription());
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mNodeSlugs = nodeSlugs;
-                                        mTitles = titles;
-                                        mDescriptions = descriptions;
-                                        setupAdapter();
-                                    }
-                                });
+                            public void success(final TopicData topicData, Response response) {
+                                mNodeSlugs.add(nodeSlug);
+                                mTitles.put(nodeSlug, topicData.getTitle());
+                                mDescriptions.put(nodeSlug, topicData.getDescription());
+                                if (mAdapter == null) {
+                                    setupAdapter();
+                                } else {
+                                    mAdapter.notifyDataSetChanged();
+                                }
                             }
 
                             @Override
@@ -153,13 +144,14 @@ public class TopicFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater()
-                        .inflate(R.layout.subtopic_list_item, parent, false);
+                        .inflate(R.layout.topic_list_item, parent, false);
             }
 
+            String item = getItem(position);
             TextView title = (TextView) convertView.findViewById(R.id.title);
-            title.setText(mTitles.get(position));
+            title.setText(mTitles.get(item));
             TextView description = (TextView) convertView.findViewById(R.id.description);
-            description.setText(mDescriptions.get(position));
+            description.setText(mDescriptions.get(item));
 
             return convertView;
         }
