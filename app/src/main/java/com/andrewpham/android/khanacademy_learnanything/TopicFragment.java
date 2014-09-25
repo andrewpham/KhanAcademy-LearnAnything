@@ -2,7 +2,6 @@ package com.andrewpham.android.khanacademy_learnanything;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,9 +16,11 @@ import android.widget.TextView;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
+import com.andrewpham.android.khanacademy_learnanything.video_list_model.TopicVideo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -36,6 +37,7 @@ public class TopicFragment extends Fragment {
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
     private ArrayList<String> mNodeSlugs = new ArrayList<String>();
+    private HashMap<String, String> mKinds = new HashMap<String, String>();
     private HashMap<String, String> mTitles = new HashMap<String, String>();
     private HashMap<String, String> mDescriptions = new HashMap<String, String>();
     ItemAdapter mAdapter;
@@ -70,7 +72,62 @@ public class TopicFragment extends Fragment {
         LinearLayout headerLayout = (LinearLayout) layoutInflater.inflate(R.layout.topic_list_header, null, false);
         mTextView = (TextView) headerLayout.findViewById(R.id.textView);
         mListView.addHeaderView(headerLayout, null, false);
-        new FetchItemsTask().execute();
+        ApiClient.get().getTopicData(mNodeSlug, new Callback<TopicData>() {
+            @Override
+            public void success(final TopicData topicData, Response response) {
+                mTextView.setText(topicData.getDescription());
+                for (Child child : topicData.getChildren()) {
+                    final String nodeSlug = child.getNodeSlug();
+                    if (nodeSlug.startsWith("v/") || nodeSlug.startsWith("e/")) continue;
+                    mNodeSlugs.add(nodeSlug);
+                    mKinds.put(nodeSlug, child.getKind());
+                    ApiClient.get().getTopicData(nodeSlug, new Callback<TopicData>() {
+                        @Override
+                        public void success(final TopicData topicData, Response response) {
+                            mTitles.put(nodeSlug, topicData.getTitle());
+                            mDescriptions.put(nodeSlug, topicData.getDescription());
+                            if (mAdapter == null) {
+                                setupAdapter();
+                            } else {
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+        ApiClient.get().getTopicVideos(mNodeSlug, new Callback<List<TopicVideo>>() {
+            @Override
+            public void success(List<TopicVideo> topicVideos, Response response) {
+                for (TopicVideo topicVideo : topicVideos) {
+                    String nodeSlug = topicVideo.getNodeSlug();
+                    mNodeSlugs.add(nodeSlug);
+                    mKinds.put(nodeSlug, topicVideo.getKind());
+                    mTitles.put(nodeSlug, topicVideo.getTitle());
+                    mDescriptions.put(nodeSlug, topicVideo.getUrl());
+                    if (mAdapter == null) {
+                        setupAdapter();
+                    } else {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
@@ -93,45 +150,6 @@ public class TopicFragment extends Fragment {
             mListView.setAdapter(mAdapter);
         } else {
             mListView.setAdapter(null);
-        }
-    }
-
-    private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            ApiClient.get().getTopicData(mNodeSlug, new Callback<TopicData>() {
-                @Override
-                public void success(final TopicData topicData, Response response) {
-                    mTextView.setText(topicData.getDescription());
-                    for (Child child : topicData.getChildren()) {
-                        final String nodeSlug = child.getNodeSlug();
-                        ApiClient.get().getTopicData(nodeSlug, new Callback<TopicData>() {
-                            @Override
-                            public void success(final TopicData topicData, Response response) {
-                                mNodeSlugs.add(nodeSlug);
-                                mTitles.put(nodeSlug, topicData.getTitle());
-                                mDescriptions.put(nodeSlug, topicData.getDescription());
-                                if (mAdapter == null) {
-                                    setupAdapter();
-                                } else {
-                                    mAdapter.notifyDataSetChanged();
-                                }
-                            }
-
-                            @Override
-                            public void failure(RetrofitError error) {
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
-            return null;
         }
     }
 

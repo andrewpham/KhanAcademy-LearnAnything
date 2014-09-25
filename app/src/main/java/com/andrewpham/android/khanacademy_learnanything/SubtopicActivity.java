@@ -6,8 +6,8 @@ package com.andrewpham.android.khanacademy_learnanything;
 public class SubtopicActivity extends SingleFragmentActivity {
 
     @Override
-    protected SubtopicFragment createFragment() {
-        return SubtopicFragment.newInstance(getIntent().getStringExtra(TopicFragment.EXTRA_NODE_SLUG));
+    protected TopicFragment createFragment() {
+        return TopicFragment.newInstance(getIntent().getStringExtra(TopicFragment.EXTRA_NODE_SLUG));
     }
 
 }

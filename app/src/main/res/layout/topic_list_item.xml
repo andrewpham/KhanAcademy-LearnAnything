@@ -2,8 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/fragment_background">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/title"
@@ -38,7 +37,6 @@
         android:textSize="10sp"
         android:paddingBottom="20sp"
         android:paddingLeft="10sp"
-        android:paddingRight="10sp"
-        android:textColor="@color/fragment_text" />
+        android:paddingRight="10sp" />
 
 </RelativeLayout>

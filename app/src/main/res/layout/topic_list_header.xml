@@ -14,7 +14,7 @@
         android:paddingBottom="20sp"
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
-        android:textColor="@color/fragment_text"
+        android:textColor="@color/list_header_text"
         android:background="@color/list_header_background"
         android:textStyle="italic" />
 

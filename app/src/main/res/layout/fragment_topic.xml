@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:horizontalSpacing="2dp"
         android:verticalSpacing="2dp"
-        android:divider="@color/subtopic_list_divider"
+        android:divider="@color/topic_list_divider"
         android:dividerHeight="1dip"/>
 
 </LinearLayout>
