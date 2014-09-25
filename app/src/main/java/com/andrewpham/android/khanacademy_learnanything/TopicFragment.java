@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -59,6 +61,8 @@ public class TopicFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -66,6 +70,10 @@ public class TopicFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_topic, container, false);
+
+        if (NavUtils.getParentActivityName(getActivity()) != null) {
+            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         mListView = (ListView) v.findViewById(R.id.listView);
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -140,6 +148,18 @@ public class TopicFragment extends Fragment {
         });
 
         return v;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (NavUtils.getParentActivityName(getActivity()) != null) {
+                    NavUtils.navigateUpFromSameTask(getActivity());
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     void setupAdapter() {

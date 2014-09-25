@@ -12,7 +12,7 @@
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:contentDescription="@string/desc_list_item_icon"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/ic_action_name"
         android:layout_centerVertical="true"/>
 
     <TextView

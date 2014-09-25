@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.andrewpham.android.khanacademy_learnanything">
+    package="com.andrewpham.android.khanacademy_learnanything">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
+        android:logo="@drawable/ic_action_name"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
@@ -14,21 +15,21 @@
             android:launchMode="singleTop"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".TopicActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"/>
+            android:label="@string/app_name" />
         <activity
             android:name=".SubtopicActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SubjectActivity"/>
+                android:value=".HomeActivity" />
         </activity>
     </application>
 

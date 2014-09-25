@@ -12,4 +12,5 @@
     <color name="list_header_background">#1c758a</color>
     <color name="list_header_text">#ffffff</color>
     <color name="topic_list_divider">#e6e6e6</color>
+    <color name="subtopic_actionbar_background">#644172</color>
 </resources>
