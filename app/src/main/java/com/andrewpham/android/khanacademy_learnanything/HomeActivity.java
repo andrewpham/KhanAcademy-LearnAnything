@@ -198,6 +198,13 @@ public class HomeActivity extends Activity {
 
                 }
             });
+
+            try {
+                OAuthClient.initialize();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return null;
         }
     }
