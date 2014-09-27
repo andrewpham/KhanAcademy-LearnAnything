@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -138,6 +139,7 @@ public class HomeActivity extends Activity {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
+                new OAuthTask().execute();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -173,6 +175,17 @@ public class HomeActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            try {
+                OAuthClient.authenticate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
@@ -198,13 +211,26 @@ public class HomeActivity extends Activity {
 
                 }
             });
+            return null;
+        }
+    }
 
+    private class OAuthTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
             try {
-                OAuthClient.initialize();
+                String url = OAuthClient.initialize();
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setData(Uri.parse(url));
+//                startActivityForResult(i, 0);
+                Intent i = new Intent(mContext, WebpageActivity.class);
+                i.setData(Uri.parse(url));
+
+                startActivity(i);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return null;
         }
     }
