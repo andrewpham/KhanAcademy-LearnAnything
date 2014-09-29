@@ -1,9 +1,9 @@
 package com.andrewpham.android.khanacademy_learnanything;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +25,10 @@ public class WebpageFragment extends Fragment {
 
     private String mUrl;
     private WebView mWebView;
+    private String token;
+    private String secret;
+    private String verifier;
+    private String accessUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,14 +67,20 @@ public class WebpageFragment extends Fragment {
                     URL aURL = null;
                     try {
                         aURL = new URL(url);
-                        Log.d("OAuthClient", aURL.getQuery());
                         Map<String, String> queryMap = getQueryMap(aURL.getQuery());
-                        Log.d("OAuthClient", queryMap.get("oauth_verifier"));
+                        token = queryMap.get("oauth_token");
+                        secret = queryMap.get("oauth_secret");
+                        verifier = queryMap.get("oauth_verifier");
+                        new AuthorizeTask().execute();
+                        view.loadUrl(accessUrl);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                } else {
+                    view.loadUrl(url);
                 }
-                view.loadUrl(url);
                 return true;
             }
         });
@@ -100,5 +110,18 @@ public class WebpageFragment extends Fragment {
             map.put(name, value);
         }
         return map;
+    }
+
+    private class AuthorizeTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                accessUrl = OAuthClient.authenticate(token, secret, verifier);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

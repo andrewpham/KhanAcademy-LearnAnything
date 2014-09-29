@@ -175,17 +175,6 @@ public class HomeActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            try {
-                OAuthClient.authenticate();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
