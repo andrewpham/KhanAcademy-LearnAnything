@@ -7,5 +7,4 @@ public class WebpageActivity extends SingleFragmentActivity {
     public Fragment createFragment() {
         return new WebpageFragment();
     }
-
 }

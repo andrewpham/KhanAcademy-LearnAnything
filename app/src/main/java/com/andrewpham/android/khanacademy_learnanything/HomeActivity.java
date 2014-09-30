@@ -209,12 +209,12 @@ public class HomeActivity extends Activity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                String url = OAuthClient.initialize();
+                String authorizationUrl = OAuthClient.initialize();
 //                Intent i = new Intent(Intent.ACTION_VIEW);
 //                i.setData(Uri.parse(url));
 //                startActivityForResult(i, 0);
                 Intent i = new Intent(mContext, WebpageActivity.class);
-                i.setData(Uri.parse(url));
+                i.setData(Uri.parse(authorizationUrl));
 
                 startActivity(i);
             } catch (Exception e) {

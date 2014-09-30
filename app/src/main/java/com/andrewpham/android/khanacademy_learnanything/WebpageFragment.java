@@ -1,6 +1,5 @@
 package com.andrewpham.android.khanacademy_learnanything;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -15,20 +14,18 @@ import android.widget.ProgressBar;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by andrewpham on 9/27/14.
  */
 public class WebpageFragment extends Fragment {
+
     public static final String TAG = "WebpageFragment";
+
+    private static final String FORWARDING_URL = "https://pokedough.temboolive.com/callback/";
 
     private String mUrl;
     private WebView mWebView;
-    private String token;
-    private String secret;
-    private String verifier;
-    private String accessUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,16 +60,10 @@ public class WebpageFragment extends Fragment {
         mWebView.setWebViewClient(new WebViewClient() {
 
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith("https://pokedough.temboolive.com/callback/")) {
-                    URL aURL = null;
+                if (url.startsWith(FORWARDING_URL)) {
                     try {
-                        aURL = new URL(url);
-                        Map<String, String> queryMap = getQueryMap(aURL.getQuery());
-                        token = queryMap.get("oauth_token");
-                        secret = queryMap.get("oauth_secret");
-                        verifier = queryMap.get("oauth_verifier");
-                        new AuthorizeTask().execute();
-                        view.loadUrl(accessUrl);
+                        HashMap<String, String> queryMap = getQueryMap(new URL(url).getQuery());
+                        view.loadUrl(OAuthClient.authenticate(queryMap.get("oauth_token"), queryMap.get("oauth_verifier")));
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     } catch (Exception e) {
@@ -101,27 +92,12 @@ public class WebpageFragment extends Fragment {
         return v;
     }
 
-    public static Map<String, String> getQueryMap(String query) {
-        String[] params = query.split("&");
-        Map<String, String> map = new HashMap<String, String>();
-        for (String param : params) {
-            String name = param.split("=")[0];
-            String value = param.split("=")[1];
-            map.put(name, value);
+    public static HashMap<String, String> getQueryMap(String query) {
+        HashMap<String, String> queryMap = new HashMap<String, String>();
+        for (String param : query.split("&")) {
+            queryMap.put(param.split("=")[0], param.split("=")[1]);
         }
-        return map;
+        return queryMap;
     }
 
-    private class AuthorizeTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                accessUrl = OAuthClient.authenticate(token, secret, verifier);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
 }
