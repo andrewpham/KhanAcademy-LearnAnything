@@ -26,7 +26,4 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.squareup.retrofit:retrofit:1.6.1'
     compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
-    compile files('/Users/andrewpham/Desktop/KhanAcademy-LearnAnything/libs/temboo-android-sdk-core-2.5.0.jar')
-    compile files('/Users/andrewpham/Desktop/KhanAcademy-LearnAnything/libs/KhanAcademy-2.5.0.jar')
-    compile files('/Users/andrewpham/Desktop/KhanAcademy-LearnAnything/libs/sun.misc.BASE64Decoder.jar')
 }

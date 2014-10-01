@@ -11,6 +11,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -20,9 +22,7 @@ import java.util.HashMap;
  */
 public class WebpageFragment extends Fragment {
 
-    public static final String TAG = "WebpageFragment";
-
-    private static final String FORWARDING_URL = "https://pokedough.temboolive.com/callback/";
+    private static final String FORWARDING_URL = "http://www.khanacademy.org/api/auth/default_callback";
 
     private String mUrl;
     private WebView mWebView;
@@ -63,7 +63,7 @@ public class WebpageFragment extends Fragment {
                 if (url.startsWith(FORWARDING_URL)) {
                     try {
                         HashMap<String, String> queryMap = getQueryMap(new URL(url).getQuery());
-                        view.loadUrl(OAuthClient.authenticate(queryMap.get("oauth_token"), queryMap.get("oauth_verifier")));
+                        view.loadUrl(OAuthClient.authenticate(queryMap.get("oauth_token")));
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     } catch (Exception e) {

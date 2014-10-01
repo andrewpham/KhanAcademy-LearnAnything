@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
+import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
@@ -31,7 +32,6 @@ import retrofit.client.Response;
 
 public class HomeActivity extends Activity {
 
-    public static final String TAG = "HomeActivity";
     public static final String EXTRA_TRANSLATED_TITLES = "com.andrewpham.android.khanacademy_learnanything.translated_titles";
     public static final String EXTRA_NODE_SLUGS = "com.andrewpham.android.khanacademy_learnanything.node_slugs";
 

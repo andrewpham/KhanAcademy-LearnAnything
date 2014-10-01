@@ -1,7 +1,4 @@
-package com.andrewpham.android.khanacademy_learnanything;
-
-import com.temboo.Library.KhanAcademy.OAuth.InitializeOAuth;
-import com.temboo.core.TembooSession;
+package com.andrewpham.android.khanacademy_learnanything.oauth;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -22,46 +19,17 @@ public class OAuthClient {
     private static final String CONSUMER_KEY = "MSEDRueRnLjvzZe7";
     private static final String CONSUMER_SECRET = "gpkQW95dCDz94ebs";
 
-    private static final String TEMBOO_ACCOUNT_NAME = "pokedough";
-    private static final String TEMBOO_APP_KEY_NAME = "KhanAcademy-LearnAnything";
-    private static final String TEMBOO_APP_KEY_VALUE = "7f80e64b41284e74975efbf01f058d37";
-
+    private static final String REQUEST_URL = "http://www.khanacademy.org/api/auth/request_token";
     private static final String ACCESS_URL = "http://www.khanacademy.org/api/auth/access_token";
-    private static final String CALLBACK_URL = "http%3A%2F%2Fwww.khanacademy.org%2Fapi%2Fauth%2Fdefault_callback";
 
-    private static TembooSession mSession;
     private static Base64 mBase64 = new Base64();
 
     public static String initialize() throws Exception {
-        mSession = new TembooSession(TEMBOO_ACCOUNT_NAME, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY_VALUE);
-        InitializeOAuth initializeOAuthChoreo = new InitializeOAuth(mSession);
-        InitializeOAuth.InitializeOAuthInputSet initializeOAuthInputs = initializeOAuthChoreo.newInputSet();
-        initializeOAuthInputs.set_ConsumerKey(CONSUMER_KEY);
-        initializeOAuthInputs.set_ConsumerSecret(CONSUMER_SECRET);
-        InitializeOAuth.InitializeOAuthResultSet initializeOAuthResults = initializeOAuthChoreo.execute(initializeOAuthInputs);
-
-        return initializeOAuthResults.get_AuthorizationURL();
+        return getUrl(REQUEST_URL, null);
     }
 
-    public static String authenticate(String token, String verifier) throws Exception {
-
-        long nonce = System.currentTimeMillis();
-        long timestamp = nonce / 1000L;
-
-        String params = "oauth_callback=" + CALLBACK_URL;
-        params += "&oauth_consumer_key=" + CONSUMER_KEY;
-        params += "&oauth_nonce=" + Long.toString(nonce);
-        params += "&oauth_signature_method=" + "HMAC-SHA1";
-        params += "&oauth_timestamp=" + Long.toString(timestamp);
-        params += "&oauth_token=" + token;
-        params += "&oauth_verifier=" + verifier;
-        params += "&oauth_version=" + "1.0";
-
-        String url = ACCESS_URL;
-        url += "?" + params + "&oauth_signature=" + getSignature("GET" + "&" + encode(ACCESS_URL) + "&" + encode(params));
-
-        return url;
-
+    public static String authenticate(String token) throws Exception {
+        return getUrl(ACCESS_URL, token);
     }
 
     private static String encode(String value) {
@@ -103,6 +71,26 @@ public class OAuthClient {
         // encode it, mBase64 it, change it to string and return.
         return new String(mBase64.encode(mac.doFinal(base.toString().getBytes(
                 "UTF-8"))), "UTF-8").trim();
+    }
+
+    private static String getParams(String token) {
+        long nonce = System.currentTimeMillis();
+        long timestamp = nonce / 1000L;
+        String params = "oauth_consumer_key=" + CONSUMER_KEY +
+                "&oauth_nonce=" + Long.toString(nonce) +
+                "&oauth_signature_method=" + "HMAC-SHA1" +
+                "&oauth_timestamp=" + Long.toString(timestamp);
+        if (token != null && !token.isEmpty()) {
+            params += "&oauth_token=" + token;
+        }
+        params += "&oauth_version=" + "1.0";
+        return params;
+    }
+
+    private static String getUrl(String urlSpec, String token)
+            throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        return urlSpec + "?" + getParams(token) + "&oauth_signature=" +
+                getSignature("GET" + "&" + encode(urlSpec) + "&" + encode(getParams(token)));
     }
 
 }
