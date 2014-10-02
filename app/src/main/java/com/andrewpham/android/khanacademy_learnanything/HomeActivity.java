@@ -58,7 +58,10 @@ public class HomeActivity extends Activity {
             "humanities",
             "computing",
             "test-prep",
-            "partner-content"
+            "partner-content",
+            "college-admissions",
+            "talks-and-interviews",
+            "coach-res"
     };
     private String mTopicSlug;
     private static Context mContext;

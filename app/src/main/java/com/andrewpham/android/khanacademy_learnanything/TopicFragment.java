@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -224,6 +225,7 @@ public class TopicFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private class VideoItemAdapter extends ArrayAdapter<String> {
         public VideoItemAdapter(ArrayList<String> items) {
             super(getActivity(), 0, items);
@@ -241,8 +243,15 @@ public class TopicFragment extends Fragment {
             title.setText(mTitles.get(item));
             TextView description = (TextView) convertView.findViewById(R.id.description);
             description.setText(mDescriptions.get(item));
+
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            int width = display.getWidth();
             ImageView imageView = (ImageView) convertView
                     .findViewById(R.id.list_item_imageView);
+            ViewGroup.LayoutParams params = imageView.getLayoutParams();
+            params.height = (int) (width * 297. / 396);
+            params.width = width;
+            imageView.setLayoutParams(params);
             Picasso.with(getActivity())
                     .load(mImageUrls.get(item))
                     .fit()

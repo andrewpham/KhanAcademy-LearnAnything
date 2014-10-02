@@ -9,11 +9,14 @@
         <!--<item>Home</item>-->
         <item>Math</item>
         <item>Science</item>
-        <!--<item>Economics and finance</item>-->
-        <!--<item>Arts and humanities</item>-->
-        <!--<item>Computing</item>-->
-        <!--<item>Test prep</item>-->
-        <!--<item>Partner content</item>-->
+        <item>Economics and finance</item>
+        <item>Arts and humanities</item>
+        <item>Computing</item>
+        <item>Test prep</item>
+        <item>Partner content</item>
+        <item>College admissions</item>
+        <item>Talks and interviews</item>
+        <item>Coach and classroom resources</item>
     </string-array>
 
     <array name="home_nav_drawer_icons">
