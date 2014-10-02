@@ -139,7 +139,13 @@ public class HomeActivity extends Activity {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
-                new OAuthTask().execute();
+                try {
+                    Intent i = new Intent(mContext, WebpageActivity.class);
+                    i.setData(Uri.parse(OAuthClient.initialize()));
+                    startActivity(i);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -200,26 +206,6 @@ public class HomeActivity extends Activity {
 
                 }
             });
-            return null;
-        }
-    }
-
-    private class OAuthTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                String authorizationUrl = OAuthClient.initialize();
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse(url));
-//                startActivityForResult(i, 0);
-                Intent i = new Intent(mContext, WebpageActivity.class);
-                i.setData(Uri.parse(authorizationUrl));
-
-                startActivity(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             return null;
         }
     }

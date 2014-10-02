@@ -2,9 +2,11 @@ package com.andrewpham.android.khanacademy_learnanything;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.andrewpham.android.khanacademy_learnanything.adapter.TabsPagerAdapter;
+import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
 
 import java.util.ArrayList;
@@ -175,6 +178,13 @@ public class TopicActivity extends FragmentActivity
 
         switch (item.getItemId()) {
             case R.id.action_settings:
+                try {
+                    Intent i = new Intent(getApplicationContext(), WebpageActivity.class);
+                    i.setData(Uri.parse(OAuthClient.initialize()));
+                    startActivity(i);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

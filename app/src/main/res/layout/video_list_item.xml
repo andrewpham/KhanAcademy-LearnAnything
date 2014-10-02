@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="14sp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"
+        android:textColor="@color/fragment_text"
+        android:textStyle="italic"/>
+
+    <TextView
+        android:layout_toRightOf="@id/title"
+        android:id="@+id/videoCount"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="14sp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"
+        android:textColor="@color/fragment_text"
+        android:textStyle="italic"/>
+
+    <TextView
+        android:layout_below="@id/title"
+        android:id="@+id/description"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="10sp"
+        android:paddingBottom="20sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"/>
+
+    <ImageView
+        android:id="@+id/list_item_imageView"
+        android:layout_below="@id/description"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:paddingBottom="20sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"/>
+
+</RelativeLayout>

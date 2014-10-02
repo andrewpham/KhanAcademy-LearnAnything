@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,8 +20,12 @@ import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.andrewpham.android.khanacademy_learnanything.video_list_model.TopicVideo;
+import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,7 +47,13 @@ public class TopicFragment extends Fragment {
     private HashMap<String, String> mKinds = new HashMap<String, String>();
     private HashMap<String, String> mTitles = new HashMap<String, String>();
     private HashMap<String, String> mDescriptions = new HashMap<String, String>();
-    ItemAdapter mAdapter;
+    private HashMap<String, String> mDurations = new HashMap<String, String>();
+    private HashMap<String, Date> mDatesAdded = new HashMap<String, Date>();
+    private HashMap<String, String> mUrls = new HashMap<String, String>();
+    private HashMap<String, String> mImageUrls = new HashMap<String, String>();
+
+    TopicItemAdapter mTopicItemAdapter;
+    VideoItemAdapter mVideoItemAdapter;
     ListView mListView;
     TextView mTextView;
 
@@ -94,10 +105,10 @@ public class TopicFragment extends Fragment {
                         public void success(final TopicData topicData, Response response) {
                             mTitles.put(nodeSlug, topicData.getTitle());
                             mDescriptions.put(nodeSlug, topicData.getDescription());
-                            if (mAdapter == null) {
+                            if (mTopicItemAdapter == null) {
                                 setupAdapter();
                             } else {
-                                mAdapter.notifyDataSetChanged();
+                                mTopicItemAdapter.notifyDataSetChanged();
                             }
                         }
 
@@ -122,11 +133,24 @@ public class TopicFragment extends Fragment {
                     mNodeSlugs.add(nodeSlug);
                     mKinds.put(nodeSlug, topicVideo.getKind());
                     mTitles.put(nodeSlug, topicVideo.getTitle());
-                    mDescriptions.put(nodeSlug, topicVideo.getUrl());
-                    if (mAdapter == null) {
+                    mDescriptions.put(nodeSlug, topicVideo.getDescription());
+                    int duration = topicVideo.getDuration();
+                    String remainder = Integer.toString(duration % 60);
+                    String seconds = (Integer.parseInt(remainder) < 10) ? "0" + remainder : remainder;
+                    mDurations.put(nodeSlug, Integer.toString(duration / 60) +
+                            ":" + seconds);
+                    try {
+                        mDatesAdded.put(nodeSlug, new SimpleDateFormat("yyyy-MM-dd")
+                                .parse(topicVideo.getDateAdded().substring(0, 10)));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    mUrls.put(nodeSlug, topicVideo.getUrl());
+                    mImageUrls.put(nodeSlug, topicVideo.getImageUrl());
+                    if (mVideoItemAdapter == null) {
                         setupAdapter();
                     } else {
-                        mAdapter.notifyDataSetChanged();
+                        mVideoItemAdapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -166,15 +190,20 @@ public class TopicFragment extends Fragment {
         if (getActivity() == null || mListView == null) return;
 
         if (mNodeSlugs != null) {
-            mAdapter = new ItemAdapter(mNodeSlugs);
-            mListView.setAdapter(mAdapter);
+            if (mNodeSlugs.get(0).startsWith("v/")) {
+                mVideoItemAdapter = new VideoItemAdapter(mNodeSlugs);
+                mListView.setAdapter(mVideoItemAdapter);
+            } else {
+                mTopicItemAdapter = new TopicItemAdapter(mNodeSlugs);
+                mListView.setAdapter(mTopicItemAdapter);
+            }
         } else {
             mListView.setAdapter(null);
         }
     }
 
-    private class ItemAdapter extends ArrayAdapter<String> {
-        public ItemAdapter(ArrayList<String> items) {
+    private class TopicItemAdapter extends ArrayAdapter<String> {
+        public TopicItemAdapter(ArrayList<String> items) {
             super(getActivity(), 0, items);
         }
 
@@ -190,6 +219,34 @@ public class TopicFragment extends Fragment {
             title.setText(mTitles.get(item));
             TextView description = (TextView) convertView.findViewById(R.id.description);
             description.setText(mDescriptions.get(item));
+
+            return convertView;
+        }
+    }
+
+    private class VideoItemAdapter extends ArrayAdapter<String> {
+        public VideoItemAdapter(ArrayList<String> items) {
+            super(getActivity(), 0, items);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater()
+                        .inflate(R.layout.video_list_item, parent, false);
+            }
+
+            String item = getItem(position);
+            TextView title = (TextView) convertView.findViewById(R.id.title);
+            title.setText(mTitles.get(item));
+            TextView description = (TextView) convertView.findViewById(R.id.description);
+            description.setText(mDescriptions.get(item));
+            ImageView imageView = (ImageView) convertView
+                    .findViewById(R.id.list_item_imageView);
+            Picasso.with(getActivity())
+                    .load(mImageUrls.get(item))
+                    .fit()
+                    .into(imageView);
 
             return convertView;
         }
