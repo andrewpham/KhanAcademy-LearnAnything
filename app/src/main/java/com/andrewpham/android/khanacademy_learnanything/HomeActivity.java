@@ -8,7 +8,6 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -124,7 +123,28 @@ public class HomeActivity extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mTopicSlug = TOPIC_SLUGS[position];
-            new FetchItemsTask().execute();
+            final ArrayList<String> translatedTitles = new ArrayList<String>();
+            final ArrayList<String> nodeSlugs = new ArrayList<String>();
+            ApiClient.get().getTopicData(mTopicSlug, new Callback<TopicData>() {
+                @Override
+                public void success(TopicData topicData, Response response) {
+                    for (Child child : topicData.getChildren()) {
+                        translatedTitles.add(child.getTranslatedTitle());
+                        nodeSlugs.add(child.getNodeSlug());
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList(EXTRA_TRANSLATED_TITLES, translatedTitles);
+                    bundle.putStringArrayList(EXTRA_NODE_SLUGS, nodeSlugs);
+                    Intent i = new Intent(mContext, TopicActivity.class);
+                    i.putExtras(bundle);
+                    startActivity(i);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
         }
     }
 
@@ -182,35 +202,6 @@ public class HomeActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            final ArrayList<String> translatedTitles = new ArrayList<String>();
-            final ArrayList<String> nodeSlugs = new ArrayList<String>();
-            ApiClient.get().getTopicData(mTopicSlug, new Callback<TopicData>() {
-                @Override
-                public void success(TopicData topicData, Response response) {
-                    for (Child child : topicData.getChildren()) {
-                        translatedTitles.add(child.getTranslatedTitle());
-                        nodeSlugs.add(child.getNodeSlug());
-                    }
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArrayList(EXTRA_TRANSLATED_TITLES, translatedTitles);
-                    bundle.putStringArrayList(EXTRA_NODE_SLUGS, nodeSlugs);
-                    Intent i = new Intent(mContext, TopicActivity.class);
-                    i.putExtras(bundle);
-                    startActivity(i);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
-            return null;
-        }
     }
 
 }
