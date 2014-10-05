@@ -41,6 +41,7 @@ public class TopicFragment extends Fragment {
 
     public static final String TAG = "TopicFragment";
     public static final String EXTRA_NODE_SLUG = "com.andrewpham.android.khanacademy_learnanything.node_slug";
+    public static final String EXTRA_ID = "com.andrewpham.android.khanacademy_learnanything.id";
 
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
@@ -50,7 +51,7 @@ public class TopicFragment extends Fragment {
     private HashMap<String, String> mDescriptions = new HashMap<String, String>();
     private HashMap<String, String> mDurations = new HashMap<String, String>();
     private HashMap<String, Date> mDatesAdded = new HashMap<String, Date>();
-    private HashMap<String, String> mUrls = new HashMap<String, String>();
+    private HashMap<String, String> mIds = new HashMap<String, String>();
     private HashMap<String, String> mImageUrls = new HashMap<String, String>();
 
     TopicItemAdapter mTopicItemAdapter;
@@ -146,7 +147,7 @@ public class TopicFragment extends Fragment {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    mUrls.put(nodeSlug, topicVideo.getUrl());
+                    mIds.put(nodeSlug, topicVideo.getYoutubeId());
                     mImageUrls.put(nodeSlug, topicVideo.getImageUrl());
                     if (mVideoItemAdapter == null) {
                         setupAdapter();
@@ -164,11 +165,19 @@ public class TopicFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                String item = mNodeSlugs.get(pos - 1);
-                Intent i = new Intent(getActivity(), SubtopicActivity.class);
-                i.putExtra(EXTRA_NODE_SLUG, item);
+                if (mNodeSlugs.get(0).startsWith("v/")) {
+                    String item = mNodeSlugs.get(pos - 1);
+                    Intent i = new Intent(getActivity(), FullscreenDemoActivity.class);
+                    i.putExtra(EXTRA_ID, mIds.get(item));
 
-                startActivity(i);
+                    startActivity(i);
+                } else {
+                    String item = mNodeSlugs.get(pos - 1);
+                    Intent i = new Intent(getActivity(), SubtopicActivity.class);
+                    i.putExtra(EXTRA_NODE_SLUG, item);
+
+                    startActivity(i);
+                }
             }
         });
 

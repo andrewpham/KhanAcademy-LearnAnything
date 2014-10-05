@@ -4,6 +4,9 @@
     <string name="app_name">Khan Academy - Learn Anything</string>
     <string name="action_login">Login</string>
     <string name="desc_list_item_icon">Item Icon</string>
+    <string name="enter_fullscreen">Enter Fullscreen</string>
+    <string name="landscape_fullscreen">Always fullscreen in landscape</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
     <string-array name="home_nav_drawer_items">
         <!--<item>Home</item>-->
