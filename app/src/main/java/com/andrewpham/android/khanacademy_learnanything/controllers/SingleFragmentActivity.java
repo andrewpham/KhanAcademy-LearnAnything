@@ -1,4 +1,4 @@
-package com.andrewpham.android.khanacademy_learnanything;
+package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.app.ActionBar;
 import android.graphics.drawable.ColorDrawable;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+
+import com.andrewpham.android.khanacademy_learnanything.R;
 
 /**
  * Created by Andrew on 19/08/2014.

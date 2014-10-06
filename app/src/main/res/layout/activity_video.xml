@@ -15,7 +15,6 @@
   limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/layout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
@@ -24,29 +23,5 @@
         android:id="@+id/player"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-    <LinearLayout
-        android:id="@+id/other_views"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="5dp"
-        android:orientation="vertical">
-
-        <CheckBox
-            android:id="@+id/landscape_fullscreen_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/landscape_fullscreen"/>
-
-        <Button
-            android:id="@+id/fullscreen_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/enter_fullscreen"/>
-
-    </LinearLayout>
 
 </LinearLayout>

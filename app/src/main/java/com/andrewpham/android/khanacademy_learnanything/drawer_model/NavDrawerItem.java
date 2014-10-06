@@ -1,4 +1,4 @@
-package com.andrewpham.android.khanacademy_learnanything.ui_model;
+package com.andrewpham.android.khanacademy_learnanything.drawer_model;
 
 public class NavDrawerItem {
 

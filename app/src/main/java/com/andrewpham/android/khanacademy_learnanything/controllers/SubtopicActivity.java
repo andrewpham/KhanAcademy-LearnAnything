@@ -1,5 +1,6 @@
-package com.andrewpham.android.khanacademy_learnanything;
+package com.andrewpham.android.khanacademy_learnanything.controllers;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -7,12 +8,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 
 /**
  * Created by Andrew on 22/09/2014.
  */
 public class SubtopicActivity extends SingleFragmentActivity {
+
+    private ActionBar mActionBar;
 
     @Override
     protected TopicFragment createFragment() {
@@ -22,8 +26,11 @@ public class SubtopicActivity extends SingleFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+        mActionBar = getActionBar();
+        mActionBar.setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.subtopic_actionbar_background)));
+        mActionBar.setDisplayShowTitleEnabled(true);
+        mActionBar.setTitle(getIntent().getStringExtra(TopicFragment.EXTRA_TITLE));
     }
 
     @Override

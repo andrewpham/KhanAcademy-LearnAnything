@@ -1,4 +1,4 @@
-package com.andrewpham.android.khanacademy_learnanything.video_list_model;
+package com.andrewpham.android.khanacademy_learnanything.video_model;
 
 import com.google.gson.annotations.Expose;
 

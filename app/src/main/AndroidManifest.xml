@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".HomeActivity"
+            android:name=".controllers.HomeActivity"
             android:launchMode="singleTop"
             android:label="@string/app_name">
             <intent-filter>
@@ -22,29 +22,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TopicActivity"
+            android:name=".controllers.TopicActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"/>
         <activity
-            android:name=".SubtopicActivity"
+            android:name=".controllers.SubtopicActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity"/>
+                android:value=".controllers.HomeActivity"/>
         </activity>
         <activity
-            android:name=".WebpageActivity"
+            android:name=".controllers.WebpageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity"/>
+                android:value=".controllers.HomeActivity"/>
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name=".FullscreenDemoActivity"
-            android:screenOrientation="sensor"
+            android:name=".controllers.VideoActivity"
+            android:screenOrientation="landscape"
             android:configChanges="keyboardHidden|orientation|screenSize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controllers.HomeActivity"/>
         </activity>
 
     </application>

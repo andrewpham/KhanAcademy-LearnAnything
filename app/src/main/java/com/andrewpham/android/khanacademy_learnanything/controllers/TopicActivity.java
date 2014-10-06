@@ -1,8 +1,7 @@
-package com.andrewpham.android.khanacademy_learnanything;
+package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.content.Context;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -10,29 +9,28 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
+import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
+import com.andrewpham.android.khanacademy_learnanything.R;
+import com.andrewpham.android.khanacademy_learnanything.adapters.TabsPagerAdapter;
 import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
-import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
-import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
-import com.andrewpham.android.khanacademy_learnanything.ui_model.NavDrawerItem;
+import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
 
 import java.util.ArrayList;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+public class TopicActivity extends FragmentActivity
+        implements ActionBar.TabListener {
 
-public class HomeActivity extends Activity {
-
-    public static final String EXTRA_TRANSLATED_TITLES = "com.andrewpham.android.khanacademy_learnanything.translated_titles";
-    public static final String EXTRA_NODE_SLUGS = "com.andrewpham.android.khanacademy_learnanything.node_slugs";
+    public static final String TAG = "TopicActivity";
 
     private ActionBar mActionBar;
 
@@ -50,29 +48,24 @@ public class HomeActivity extends Activity {
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerListAdapter mNavDrawerListAdapter;
 
-    private static final String[] TOPIC_SLUGS = new String[]{
-            "math",
-            "science",
-            "economics-finance-domain",
-            "humanities",
-            "computing",
-            "test-prep",
-            "partner-content",
-            "college-admissions",
-            "talks-and-interviews",
-            "coach-res"
-    };
-    private String mTopicSlug;
-    private static Context mContext;
+    private ArrayList<String> mTranslatedTitles;
+    private ArrayList<String> mNodeSlugs;
+
+    private ViewPager mViewPager;
+    private TabsPagerAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getApplicationContext();
-        setContentView(R.layout.activity_home);
+        Bundle bundle = this.getIntent().getExtras();
+        mTranslatedTitles = bundle.getStringArrayList(HomeActivity.EXTRA_TRANSLATED_TITLES);
+        Log.d(TAG, mTranslatedTitles.toString());
+        mNodeSlugs = bundle.getStringArrayList(HomeActivity.EXTRA_NODE_SLUGS);
+        Log.d(TAG, mNodeSlugs.toString());
+        setContentView(R.layout.activity_topic);
 
         mTitle = mDrawerTitle = getTitle();
-        mTopics = getResources().getStringArray(R.array.home_nav_drawer_items);
+        mTopics = mTranslatedTitles.toArray(new String[mTranslatedTitles.size()]);
         mIcons = getResources().obtainTypedArray(R.array.home_nav_drawer_icons);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerList = (ListView) findViewById(R.id.drawerListView);
@@ -91,10 +84,36 @@ public class HomeActivity extends Activity {
                 mNavDrawerItems);
         mDrawerList.setAdapter(mNavDrawerListAdapter);
 
+        // Initialization
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mActionBar.setSelectedNavigationItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mActionBar = getActionBar();
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), mTranslatedTitles.size(), mNodeSlugs);
+
+        // Initializations with ViewPager
+        mViewPager.setAdapter(mAdapter);
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.actionbar_background)));
+        mActionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.actionbar_tab_background)));
+
+        // Initializations with Navigation Drawer
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
-        mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.actionbar_background)));
         mActionBar.setDisplayShowTitleEnabled(false);
 
         mDrawerToggle = new ActionBarDrawerToggle(this,
@@ -113,6 +132,27 @@ public class HomeActivity extends Activity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        // Adding tabs
+        for (String tab : mTopics) {
+            mActionBar.addTab(mActionBar.newTab().setText(tab)
+                    .setTabListener(this));
+        }
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
     }
 
     /**
@@ -122,29 +162,7 @@ public class HomeActivity extends Activity {
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mTopicSlug = TOPIC_SLUGS[position];
-            final ArrayList<String> translatedTitles = new ArrayList<String>();
-            final ArrayList<String> nodeSlugs = new ArrayList<String>();
-            ApiClient.get().getTopicData(mTopicSlug, new Callback<TopicData>() {
-                @Override
-                public void success(TopicData topicData, Response response) {
-                    for (Child child : topicData.getChildren()) {
-                        translatedTitles.add(child.getTranslatedTitle());
-                        nodeSlugs.add(child.getNodeSlug());
-                    }
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArrayList(EXTRA_TRANSLATED_TITLES, translatedTitles);
-                    bundle.putStringArrayList(EXTRA_NODE_SLUGS, nodeSlugs);
-                    Intent i = new Intent(mContext, TopicActivity.class);
-                    i.putExtras(bundle);
-                    startActivity(i);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
+            mViewPager.setCurrentItem(position);
         }
     }
 
@@ -163,7 +181,7 @@ public class HomeActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 try {
-                    Intent i = new Intent(mContext, WebpageActivity.class);
+                    Intent i = new Intent(getApplicationContext(), WebpageActivity.class);
                     i.setData(Uri.parse(OAuthClient.initialize()));
                     startActivity(i);
                 } catch (Exception e) {

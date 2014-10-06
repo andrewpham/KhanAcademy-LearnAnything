@@ -1,4 +1,4 @@
-package com.andrewpham.android.khanacademy_learnanything;
+package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 
 import java.net.MalformedURLException;

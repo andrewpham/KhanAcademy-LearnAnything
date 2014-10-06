@@ -1,4 +1,4 @@
-package com.andrewpham.android.khanacademy_learnanything;
+package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,10 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
-import com.andrewpham.android.khanacademy_learnanything.video_list_model.TopicVideo;
+import com.andrewpham.android.khanacademy_learnanything.video_model.VideoData;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -40,8 +41,12 @@ import retrofit.client.Response;
 public class TopicFragment extends Fragment {
 
     public static final String TAG = "TopicFragment";
-    public static final String EXTRA_NODE_SLUG = "com.andrewpham.android.khanacademy_learnanything.node_slug";
-    public static final String EXTRA_ID = "com.andrewpham.android.khanacademy_learnanything.id";
+    public static final String EXTRA_NODE_SLUG =
+            "com.andrewpham.android.khanacademy_learnanything.controllers.node_slug";
+    public static final String EXTRA_TITLE =
+            "com.andrewpham.android.khanacademy_learnanything.controllers.title";
+    public static final String EXTRA_ID =
+            "com.andrewpham.android.khanacademy_learnanything.controllers.id";
 
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
@@ -127,28 +132,28 @@ public class TopicFragment extends Fragment {
 
             }
         });
-        ApiClient.get().getTopicVideos(mNodeSlug, new Callback<List<TopicVideo>>() {
+        ApiClient.get().getTopicVideos(mNodeSlug, new Callback<List<VideoData>>() {
             @Override
-            public void success(List<TopicVideo> topicVideos, Response response) {
-                for (TopicVideo topicVideo : topicVideos) {
-                    String nodeSlug = topicVideo.getNodeSlug();
+            public void success(List<VideoData> videoDataList, Response response) {
+                for (VideoData videoData : videoDataList) {
+                    String nodeSlug = videoData.getNodeSlug();
                     mNodeSlugs.add(nodeSlug);
-                    mKinds.put(nodeSlug, topicVideo.getKind());
-                    mTitles.put(nodeSlug, topicVideo.getTitle());
-                    mDescriptions.put(nodeSlug, topicVideo.getDescription());
-                    int duration = topicVideo.getDuration();
+                    mKinds.put(nodeSlug, videoData.getKind());
+                    mTitles.put(nodeSlug, videoData.getTitle());
+                    mDescriptions.put(nodeSlug, videoData.getDescription());
+                    int duration = videoData.getDuration();
                     String remainder = Integer.toString(duration % 60);
                     String seconds = (Integer.parseInt(remainder) < 10) ? "0" + remainder : remainder;
                     mDurations.put(nodeSlug, Integer.toString(duration / 60) +
                             ":" + seconds);
                     try {
                         mDatesAdded.put(nodeSlug, new SimpleDateFormat("yyyy-MM-dd")
-                                .parse(topicVideo.getDateAdded().substring(0, 10)));
+                                .parse(videoData.getDateAdded().substring(0, 10)));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    mIds.put(nodeSlug, topicVideo.getYoutubeId());
-                    mImageUrls.put(nodeSlug, topicVideo.getImageUrl());
+                    mIds.put(nodeSlug, videoData.getYoutubeId());
+                    mImageUrls.put(nodeSlug, videoData.getImageUrl());
                     if (mVideoItemAdapter == null) {
                         setupAdapter();
                     } else {
@@ -167,14 +172,16 @@ public class TopicFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
                 if (mNodeSlugs.get(0).startsWith("v/")) {
                     String item = mNodeSlugs.get(pos - 1);
-                    Intent i = new Intent(getActivity(), FullscreenDemoActivity.class);
+                    Intent i = new Intent(getActivity(), VideoActivity.class);
                     i.putExtra(EXTRA_ID, mIds.get(item));
+                    i.putExtra(EXTRA_TITLE, mTitles.get(item));
 
                     startActivity(i);
                 } else {
                     String item = mNodeSlugs.get(pos - 1);
                     Intent i = new Intent(getActivity(), SubtopicActivity.class);
                     i.putExtra(EXTRA_NODE_SLUG, item);
+                    i.putExtra(EXTRA_TITLE, mTitles.get(item));
 
                     startActivity(i);
                 }

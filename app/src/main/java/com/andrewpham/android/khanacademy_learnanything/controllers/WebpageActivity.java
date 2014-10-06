@@ -1,4 +1,4 @@
-package com.andrewpham.android.khanacademy_learnanything;
+package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.support.v4.app.Fragment;
 

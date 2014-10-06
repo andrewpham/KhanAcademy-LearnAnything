@@ -1,8 +1,10 @@
-package com.andrewpham.android.khanacademy_learnanything;
+package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.andrewpham.android.khanacademy_learnanything.DeveloperKey;
+import com.andrewpham.android.khanacademy_learnanything.R;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;

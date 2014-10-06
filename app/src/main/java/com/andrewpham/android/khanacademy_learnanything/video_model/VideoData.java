@@ -1,4 +1,4 @@
-package com.andrewpham.android.khanacademy_learnanything.video_list_model;
+package com.andrewpham.android.khanacademy_learnanything.video_model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TopicVideo {
+public class VideoData {
 
     @SerializedName("translated_youtube_id")
     @Expose

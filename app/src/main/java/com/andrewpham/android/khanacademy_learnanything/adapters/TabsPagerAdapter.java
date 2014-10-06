@@ -1,10 +1,10 @@
-package com.andrewpham.android.khanacademy_learnanything.adapter;
+package com.andrewpham.android.khanacademy_learnanything.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.andrewpham.android.khanacademy_learnanything.TopicFragment;
+import com.andrewpham.android.khanacademy_learnanything.controllers.TopicFragment;
 
 import java.util.ArrayList;
 
