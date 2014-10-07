@@ -35,13 +35,43 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:textSize="10sp"
-        android:paddingBottom="14sp"
+        android:paddingBottom="10sp"
         android:paddingLeft="10sp"
         android:paddingRight="10sp"/>
 
+    <LinearLayout
+        android:layout_below="@id/description"
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="14sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp">
+
+        <TextView
+            android:id="@+id/dateAdded"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="10sp"
+            android:textColor="@color/fragment_text"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_marginRight="12dp"
+            android:textColor="@color/fragment_text"
+            android:textStyle="italic"/>
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/list_item_imageView"
-        android:layout_below="@id/description"
+        android:layout_below="@id/linearLayout"
         android:layout_height="0dp"
         android:layout_width="0dp"
         android:layout_gravity="center"
