@@ -14,16 +14,21 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
 import com.andrewpham.android.khanacademy_learnanything.R;
+import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
+import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
 import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
-import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -32,6 +37,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class HomeActivity extends Activity {
+
+    GridView mGridView;
 
     public static final String EXTRA_TRANSLATED_TITLES = "com.andrewpham.android.khanacademy_learnanything.translated_titles";
     public static final String EXTRA_NODE_SLUGS = "com.andrewpham.android.khanacademy_learnanything.node_slugs";
@@ -48,6 +55,7 @@ public class HomeActivity extends Activity {
 
     private String[] mTopics;
     private TypedArray mIcons;
+    private TypedArray mItems;
 
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerListAdapter mNavDrawerListAdapter;
@@ -64,8 +72,10 @@ public class HomeActivity extends Activity {
             "talks-and-interviews",
             "coach-res"
     };
+
     private String mTopicSlug;
     private static Context mContext;
+    private static ArrayList<Integer> mImageIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +94,13 @@ public class HomeActivity extends Activity {
 
         for (int i = 0; i < mTopics.length; i++) {
             mNavDrawerItems.add(new NavDrawerItem(mTopics[i], mIcons.getResourceId(0, -1)));
+        }
+
+        mItems = getResources().obtainTypedArray(R.array.grid_items);
+        mImageIds = new ArrayList<Integer>();
+
+        for (int i = 0; i < mItems.length(); i++) {
+            mImageIds.add(mItems.getResourceId(i, -1));
         }
 
         // Recycle the typed array
@@ -115,6 +132,15 @@ public class HomeActivity extends Activity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mGridView = (GridView) findViewById(R.id.gridView);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                getTopic(position);
+            }
+        });
+        mGridView.setAdapter(new GridAdapter(mImageIds));
     }
 
     /**
@@ -124,29 +150,7 @@ public class HomeActivity extends Activity {
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mTopicSlug = TOPIC_SLUGS[position];
-            final ArrayList<String> translatedTitles = new ArrayList<String>();
-            final ArrayList<String> nodeSlugs = new ArrayList<String>();
-            ApiClient.get().getTopicData(mTopicSlug, new Callback<TopicData>() {
-                @Override
-                public void success(TopicData topicData, Response response) {
-                    for (Child child : topicData.getChildren()) {
-                        translatedTitles.add(child.getTranslatedTitle());
-                        nodeSlugs.add(child.getNodeSlug());
-                    }
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArrayList(EXTRA_TRANSLATED_TITLES, translatedTitles);
-                    bundle.putStringArrayList(EXTRA_NODE_SLUGS, nodeSlugs);
-                    Intent i = new Intent(mContext, TopicActivity.class);
-                    i.putExtras(bundle);
-                    startActivity(i);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
+            getTopic(position);
         }
     }
 
@@ -204,6 +208,56 @@ public class HomeActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private class GridAdapter extends ArrayAdapter<Integer> {
+        public GridAdapter(ArrayList<Integer> items) {
+            super(getApplicationContext(), 0, items);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = getLayoutInflater()
+                        .inflate(R.layout.grid_item, parent, false);
+            }
+
+            Integer item = getItem(position);
+            ImageView imageView = (ImageView) convertView
+                    .findViewById(R.id.grid_item_imageView);
+            Picasso.with(getApplicationContext())
+                    .load(item)
+                    .fit()
+                    .into(imageView);
+
+            return convertView;
+        }
+    }
+
+    public void getTopic(int position) {
+        mTopicSlug = TOPIC_SLUGS[position];
+        final ArrayList<String> translatedTitles = new ArrayList<String>();
+        final ArrayList<String> nodeSlugs = new ArrayList<String>();
+        ApiClient.get().getTopicData(mTopicSlug, new Callback<TopicData>() {
+            @Override
+            public void success(TopicData topicData, Response response) {
+                for (Child child : topicData.getChildren()) {
+                    translatedTitles.add(child.getTranslatedTitle());
+                    nodeSlugs.add(child.getNodeSlug());
+                }
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList(EXTRA_TRANSLATED_TITLES, translatedTitles);
+                bundle.putStringArrayList(EXTRA_NODE_SLUGS, nodeSlugs);
+                Intent i = new Intent(mContext, TopicActivity.class);
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
 }

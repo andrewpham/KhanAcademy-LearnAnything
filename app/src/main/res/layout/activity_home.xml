@@ -6,14 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:gravity="center"
+    <GridView
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:paddingLeft="24dp"
-        android:paddingRight="12dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"
+        android:columnWidth="178dp"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="2dp"/>
 
     <ListView
         android:id="@+id/drawerListView"

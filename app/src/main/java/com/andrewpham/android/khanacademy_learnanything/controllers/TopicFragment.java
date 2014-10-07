@@ -260,7 +260,7 @@ public class TopicFragment extends Fragment {
             TextView description = (TextView) convertView.findViewById(R.id.description);
             description.setText(mDescriptions.get(item));
             TextView dateAdded = (TextView) convertView.findViewById(R.id.dateAdded);
-            SimpleDateFormat ft = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+            SimpleDateFormat ft = new SimpleDateFormat("MMMM d, yyyy");
             dateAdded.setText("Published:  " + ft.format(mDatesAdded.get(item)));
             TextView duration = (TextView) convertView.findViewById(R.id.duration);
             duration.setText("Duration:  " + mDurations.get(item));
