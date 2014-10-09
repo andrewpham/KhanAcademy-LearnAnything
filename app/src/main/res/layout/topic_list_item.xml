@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/title"
@@ -14,7 +14,7 @@
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
         android:textColor="@color/fragment_text"
-        android:textStyle="italic" />
+        android:textStyle="italic"/>
 
     <TextView
         android:layout_toRightOf="@id/title"
@@ -27,7 +27,7 @@
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
         android:textColor="@color/fragment_text"
-        android:textStyle="italic" />
+        android:textStyle="italic"/>
 
     <TextView
         android:layout_below="@id/title"
@@ -37,6 +37,7 @@
         android:textSize="10sp"
         android:paddingBottom="20sp"
         android:paddingLeft="10sp"
-        android:paddingRight="10sp" />
+        android:paddingRight="10sp"
+        android:textColor="@color/description_text"/>
 
 </RelativeLayout>

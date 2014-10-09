@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -25,7 +24,6 @@ import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
-import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.squareup.picasso.Picasso;
@@ -168,13 +166,13 @@ public class HomeActivity extends Activity {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
-                try {
-                    Intent i = new Intent(mContext, WebpageActivity.class);
-                    i.setData(Uri.parse(OAuthClient.initialize()));
-                    startActivity(i);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Intent i = new Intent(mContext, WebpageActivity.class);
+//                    i.setData(Uri.parse(OAuthClient.initialize()));
+//                    startActivity(i);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/list_selector">
@@ -24,6 +25,7 @@
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:textColor="@color/list_item_title"
         android:gravity="center_vertical"
-        android:paddingRight="40dp"/>
+        android:paddingRight="40dp"
+        tools:ignore="RtlSymmetry"/>
 
 </RelativeLayout>

@@ -37,7 +37,8 @@
         android:textSize="10sp"
         android:paddingBottom="10sp"
         android:paddingLeft="10sp"
-        android:paddingRight="10sp"/>
+        android:paddingRight="10sp"
+        android:textColor="@color/description_text"/>
 
     <LinearLayout
         android:layout_below="@id/description"

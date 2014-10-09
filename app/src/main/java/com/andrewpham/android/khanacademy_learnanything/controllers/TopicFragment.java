@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -232,8 +235,10 @@ public class TopicFragment extends Fragment {
             }
 
             String item = getItem(position);
+
             TextView title = (TextView) convertView.findViewById(R.id.title);
             title.setText(mTitles.get(item));
+
             TextView description = (TextView) convertView.findViewById(R.id.description);
             description.setText(mDescriptions.get(item));
 
@@ -255,15 +260,29 @@ public class TopicFragment extends Fragment {
             }
 
             String item = getItem(position);
+
             TextView title = (TextView) convertView.findViewById(R.id.title);
             title.setText(mTitles.get(item));
+
             TextView description = (TextView) convertView.findViewById(R.id.description);
             description.setText(mDescriptions.get(item));
+
             TextView dateAdded = (TextView) convertView.findViewById(R.id.dateAdded);
             SimpleDateFormat ft = new SimpleDateFormat("MMMM d, yyyy");
-            dateAdded.setText("Published:  " + ft.format(mDatesAdded.get(item)));
+            SpannableString dateAddedText = new SpannableString("Published:  " +
+                    ft.format(mDatesAdded.get(item)));
+            dateAddedText
+                    .setSpan(new ForegroundColorSpan(R.color.description_text), 10, dateAddedText.length(), Spannable
+                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+            dateAdded.setText(dateAddedText);
+
             TextView duration = (TextView) convertView.findViewById(R.id.duration);
-            duration.setText("Duration:  " + mDurations.get(item));
+            SpannableString durationText = new SpannableString("Duration:  " +
+                    mDurations.get(item));
+            durationText
+                    .setSpan(new ForegroundColorSpan(R.color.description_text), 9, durationText.length(), Spannable
+                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+            duration.setText(durationText);
 
             Display display = getActivity().getWindowManager().getDefaultDisplay();
             int width = display.getWidth();
