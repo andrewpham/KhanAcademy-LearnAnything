@@ -107,7 +107,8 @@ public class TopicFragment extends Fragment {
                 mTextView.setText(topicData.getDescription());
                 for (Child child : topicData.getChildren()) {
                     final String nodeSlug = child.getNodeSlug();
-                    if (nodeSlug.startsWith("v/") || nodeSlug.startsWith("e/")) continue;
+                    if (nodeSlug.startsWith("v/") || nodeSlug.startsWith("e/") ||
+                            nodeSlug.startsWith("a/") || nodeSlug.startsWith("p/")) continue;
                     mNodeSlugs.add(nodeSlug);
                     mKinds.put(nodeSlug, child.getKind());
                     ApiClient.get().getTopicData(nodeSlug, new Callback<TopicData>() {
@@ -181,12 +182,31 @@ public class TopicFragment extends Fragment {
 
                     startActivity(i);
                 } else {
-                    String item = mNodeSlugs.get(pos - 1);
-                    Intent i = new Intent(getActivity(), SubtopicActivity.class);
-                    i.putExtra(EXTRA_NODE_SLUG, item);
-                    i.putExtra(EXTRA_TITLE, mTitles.get(item));
+                    final String item = mNodeSlugs.get(pos - 1);
+                    final ArrayList<String> nodeSlugs = new ArrayList<String>();
+                    ApiClient.get().getTopicData(item, new Callback<TopicData>() {
+                        @Override
+                        public void success(final TopicData topicData, Response response) {
+                            for (Child child : topicData.getChildren()) {
+                                final String nodeSlug = child.getNodeSlug();
+                                if (nodeSlug.startsWith("e/") || nodeSlug.startsWith("a/") ||
+                                        nodeSlug.startsWith("p/")) continue;
+                                nodeSlugs.add(nodeSlug);
+                            }
+                            if (!nodeSlugs.isEmpty()) {
+                                Intent i = new Intent(getActivity(), SubtopicActivity.class);
+                                i.putExtra(EXTRA_NODE_SLUG, item);
+                                i.putExtra(EXTRA_TITLE, mTitles.get(item));
 
-                    startActivity(i);
+                                startActivity(i);
+                            }
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
                 }
             }
         });
