@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:background="@color/topic_list_divider">
 
     <ListView
         android:id="@+id/listView"
@@ -11,6 +12,7 @@
         android:horizontalSpacing="2dp"
         android:verticalSpacing="2dp"
         android:divider="@color/topic_list_divider"
-        android:dividerHeight="1dip"/>
+        android:dividerHeight="@dimen/activity_vertical_margin"
+        android:layout_margin="@dimen/activity_horizontal_margin"/>
 
 </LinearLayout>
