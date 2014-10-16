@@ -14,7 +14,8 @@
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
         android:horizontalSpacing="2dp"
-        android:verticalSpacing="2dp"/>
+        android:verticalSpacing="2dp"
+        android:background="@color/topic_list_divider"/>
 
     <ListView
         android:id="@+id/drawerListView"

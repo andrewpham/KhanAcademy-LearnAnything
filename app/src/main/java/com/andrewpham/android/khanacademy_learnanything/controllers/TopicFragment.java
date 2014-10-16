@@ -21,7 +21,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.andrewpham.android.khanacademy_learnanything.R;
-import com.andrewpham.android.khanacademy_learnanything.RoundedTransformation;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
@@ -315,7 +314,6 @@ public class TopicFragment extends Fragment {
             imageView.setLayoutParams(params);
             Picasso.with(getActivity())
                     .load(mImageUrls.get(item))
-                    .transform(new RoundedTransformation(20, 0))
                     .fit()
                     .into(imageView);
 
