@@ -2,14 +2,13 @@
 <resources>
 
     <string name="app_name">Khan Academy - Learn Anything</string>
-    <string name="action_login">Login</string>
+    <string name="action_email">Email Developer</string>
     <string name="desc_list_item_icon">Item Icon</string>
     <string name="enter_fullscreen">Enter Fullscreen</string>
     <string name="landscape_fullscreen">Always fullscreen in landscape</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
     <string-array name="home_nav_drawer_items">
-        <!--<item>Home</item>-->
         <item>Math</item>
         <item>Science</item>
         <item>Economics and finance</item>
@@ -24,19 +23,6 @@
 
     <array name="home_nav_drawer_icons">
         <item>@drawable/ic_menu_add</item>
-    </array>
-
-    <array name="grid_items">
-        <item>@drawable/ic_math</item>
-        <item>@drawable/ic_science</item>
-        <item>@drawable/ic_economics_finance_domain</item>
-        <item>@drawable/ic_humanities</item>
-        <item>@drawable/ic_computing</item>
-        <item>@drawable/ic_test_prep</item>
-        <item>@drawable/ic_partner_content</item>
-        <item>@drawable/ic_college_admissions</item>
-        <item>@drawable/ic_talks_and_interviews</item>
-        <item>@drawable/ic_coach_res</item>
     </array>
 
 </resources>

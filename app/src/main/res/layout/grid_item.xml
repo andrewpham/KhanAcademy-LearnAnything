@@ -1,7 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-           android:id="@+id/grid_item_imageView"
-           android:layout_width="match_parent"
-           android:layout_height="178dp"
-           android:layout_gravity="center"
-           android:scaleType="centerCrop"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="146dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:scaleType="centerCrop"
+    android:background="@drawable/list_item_shape">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
+        android:paddingLeft="20sp"
+        android:paddingRight="20sp"
+        android:textColor="@color/fragment_text" />
+
+</RelativeLayout>

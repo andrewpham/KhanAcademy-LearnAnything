@@ -61,6 +61,7 @@ public class TopicFragment extends Fragment {
     private HashMap<String, Date> mDatesAdded = new HashMap<String, Date>();
     private HashMap<String, String> mIds = new HashMap<String, String>();
     private HashMap<String, String> mImageUrls = new HashMap<String, String>();
+    private HashMap<String, String> mDownloadUrls = new HashMap<String, String>();
 
     TopicItemAdapter mTopicItemAdapter;
     VideoItemAdapter mVideoItemAdapter;
@@ -158,6 +159,7 @@ public class TopicFragment extends Fragment {
                     }
                     mIds.put(nodeSlug, videoData.getYoutubeId());
                     mImageUrls.put(nodeSlug, videoData.getImageUrl());
+                    mDownloadUrls.put(nodeSlug, videoData.getDownloadUrls().getMp4());
                     if (mVideoItemAdapter == null) {
                         setupAdapter();
                     } else {

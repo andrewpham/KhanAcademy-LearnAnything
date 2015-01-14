@@ -1,7 +1,9 @@
 package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +41,7 @@ public class SubtopicActivity extends SingleFragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_email:
 //                try {
 //                    Intent i = new Intent(getApplicationContext(), WebpageActivity.class);
 //                    i.setData(Uri.parse(OAuthClient.initialize()));
@@ -47,6 +49,12 @@ public class SubtopicActivity extends SingleFragmentActivity {
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                }
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setData(Uri.parse("mailto:"));
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"drew.t.pham@gmail.com"});
+
+                startActivity(Intent.createChooser(i, "Send Email"));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

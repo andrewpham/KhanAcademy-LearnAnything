@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -17,8 +18,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
@@ -26,9 +27,9 @@ import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -52,8 +53,8 @@ public class HomeActivity extends Activity {
     private CharSequence mTitle;
 
     private String[] mTopics;
+    private ArrayList<String> mItems;
     private TypedArray mIcons;
-    private TypedArray mItems;
 
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerListAdapter mNavDrawerListAdapter;
@@ -73,7 +74,6 @@ public class HomeActivity extends Activity {
 
     private String mTopicSlug;
     private static Context mContext;
-    private static ArrayList<Integer> mImageIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +83,7 @@ public class HomeActivity extends Activity {
 
         mTitle = mDrawerTitle = getTitle();
         mTopics = getResources().getStringArray(R.array.home_nav_drawer_items);
+        mItems = new ArrayList<String>(Arrays.asList(mTopics));
         mIcons = getResources().obtainTypedArray(R.array.home_nav_drawer_icons);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerList = (ListView) findViewById(R.id.drawerListView);
@@ -92,13 +93,6 @@ public class HomeActivity extends Activity {
 
         for (int i = 0; i < mTopics.length; i++) {
             mNavDrawerItems.add(new NavDrawerItem(mTopics[i], mIcons.getResourceId(0, -1)));
-        }
-
-        mItems = getResources().obtainTypedArray(R.array.grid_items);
-        mImageIds = new ArrayList<Integer>();
-
-        for (int i = 0; i < mItems.length(); i++) {
-            mImageIds.add(mItems.getResourceId(i, -1));
         }
 
         // Recycle the typed array
@@ -138,7 +132,7 @@ public class HomeActivity extends Activity {
                 getTopic(position);
             }
         });
-        mGridView.setAdapter(new GridAdapter(mImageIds));
+        mGridView.setAdapter(new GridAdapter(mItems));
     }
 
     /**
@@ -165,7 +159,7 @@ public class HomeActivity extends Activity {
         }
 
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_email:
 //                try {
 //                    Intent i = new Intent(mContext, WebpageActivity.class);
 //                    i.setData(Uri.parse(OAuthClient.initialize()));
@@ -173,6 +167,12 @@ public class HomeActivity extends Activity {
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                }
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setData(Uri.parse("mailto:"));
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"drew.t.pham@gmail.com"});
+
+                startActivity(Intent.createChooser(i, "Send Email"));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -186,7 +186,7 @@ public class HomeActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_email).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -208,8 +208,8 @@ public class HomeActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private class GridAdapter extends ArrayAdapter<Integer> {
-        public GridAdapter(ArrayList<Integer> items) {
+    private class GridAdapter extends ArrayAdapter<String> {
+        public GridAdapter(ArrayList<String> items) {
             super(getApplicationContext(), 0, items);
         }
 
@@ -220,13 +220,10 @@ public class HomeActivity extends Activity {
                         .inflate(R.layout.grid_item, parent, false);
             }
 
-            Integer item = getItem(position);
-            ImageView imageView = (ImageView) convertView
-                    .findViewById(R.id.grid_item_imageView);
-            Picasso.with(getApplicationContext())
-                    .load(item)
-                    .fit()
-                    .into(imageView);
+            String item = getItem(position);
+            TextView textView = (TextView) convertView
+                    .findViewById(R.id.title);
+            textView.setText(item);
 
             return convertView;
         }
