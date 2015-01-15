@@ -25,6 +25,7 @@ import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
+import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 
@@ -159,20 +160,22 @@ public class HomeActivity extends Activity {
         }
 
         switch (item.getItemId()) {
+            case R.id.action_login:
+                try {
+                    Intent i = new Intent(mContext, WebpageActivity.class);
+                    i.setData(Uri.parse(OAuthClient.initialize()));
+                    startActivity(i);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return true;
             case R.id.action_email:
-//                try {
-//                    Intent i = new Intent(mContext, WebpageActivity.class);
-//                    i.setData(Uri.parse(OAuthClient.initialize()));
-//                    startActivity(i);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setData(Uri.parse("mailto:"));
                 i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"drew.t.pham@gmail.com"});
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.app_email)});
 
-                startActivity(Intent.createChooser(i, "Send Email"));
+                startActivity(Intent.createChooser(i, getString(R.string.prompt_email)));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

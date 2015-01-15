@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/list_item_shape">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/list_item_shape">
 
     <TextView
         android:id="@+id/title"
@@ -15,7 +15,7 @@
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
         android:textColor="@color/fragment_text"
-        android:textStyle="italic"/>
+        android:textStyle="italic" />
 
     <TextView
         android:layout_toRightOf="@id/title"
@@ -28,7 +28,7 @@
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
         android:textColor="@color/fragment_text"
-        android:textStyle="italic"/>
+        android:textStyle="italic" />
 
     <TextView
         android:layout_below="@id/title"
@@ -39,7 +39,7 @@
         android:paddingBottom="10sp"
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
-        android:textColor="@color/description_text"/>
+        android:textColor="@color/description_text" />
 
     <LinearLayout
         android:layout_below="@id/description"
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:textSize="10sp"
             android:textColor="@color/fragment_text"
-            android:textStyle="italic"/>
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/duration"
@@ -67,7 +67,7 @@
             android:textSize="10sp"
             android:layout_marginRight="12dp"
             android:textColor="@color/fragment_text"
-            android:textStyle="italic"/>
+            android:textStyle="italic" />
 
     </LinearLayout>
 
@@ -79,8 +79,21 @@
         android:layout_gravity="center"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:paddingBottom="40sp"
+        android:paddingBottom="20sp"
         android:paddingLeft="10sp"
-        android:paddingRight="10sp"/>
+        android:paddingRight="10sp" />
+
+    <TextView
+        android:id="@+id/note"
+        android:text="@string/app_note"
+        android:layout_below="@id/list_item_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="10sp"
+        android:paddingBottom="20sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"
+        android:textColor="@color/fragment_text" />
 
 </RelativeLayout>

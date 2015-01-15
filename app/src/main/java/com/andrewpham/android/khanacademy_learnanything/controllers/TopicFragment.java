@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
+import com.andrewpham.android.khanacademy_learnanything.node_object.NodeObject;
+import com.andrewpham.android.khanacademy_learnanything.service.DownloadService;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.andrewpham.android.khanacademy_learnanything.video_model.VideoData;
@@ -30,8 +32,6 @@ import com.squareup.picasso.Picasso;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit.Callback;
@@ -43,25 +43,17 @@ import retrofit.client.Response;
  */
 public class TopicFragment extends Fragment {
 
-    public static final String TAG = "TopicFragment";
     public static final String EXTRA_NODE_SLUG =
             "com.andrewpham.android.khanacademy_learnanything.controllers.node_slug";
     public static final String EXTRA_TITLE =
             "com.andrewpham.android.khanacademy_learnanything.controllers.title";
     public static final String EXTRA_ID =
             "com.andrewpham.android.khanacademy_learnanything.controllers.id";
+    public static final String EXTRA_URL = "com.andrewpham.android.khanacademy_learnanything.controllers.url";
 
     private static final String NODE_SLUG_TAG = "NodeSlugId";
     private String mNodeSlug;
-    private ArrayList<String> mNodeSlugs = new ArrayList<String>();
-    private HashMap<String, String> mKinds = new HashMap<String, String>();
-    private HashMap<String, String> mTitles = new HashMap<String, String>();
-    private HashMap<String, String> mDescriptions = new HashMap<String, String>();
-    private HashMap<String, String> mDurations = new HashMap<String, String>();
-    private HashMap<String, Date> mDatesAdded = new HashMap<String, Date>();
-    private HashMap<String, String> mIds = new HashMap<String, String>();
-    private HashMap<String, String> mImageUrls = new HashMap<String, String>();
-    private HashMap<String, String> mDownloadUrls = new HashMap<String, String>();
+    private ArrayList<NodeObject> mNodeObjects = new ArrayList<NodeObject>();
 
     TopicItemAdapter mTopicItemAdapter;
     VideoItemAdapter mVideoItemAdapter;
@@ -108,15 +100,15 @@ public class TopicFragment extends Fragment {
                 mTextView.setText(topicData.getDescription());
                 for (Child child : topicData.getChildren()) {
                     final String nodeSlug = child.getNodeSlug();
+                    final NodeObject nodeObject = new NodeObject();
                     if (nodeSlug.startsWith("v/") || nodeSlug.startsWith("e/") ||
                             nodeSlug.startsWith("a/") || nodeSlug.startsWith("p/")) continue;
-                    mNodeSlugs.add(nodeSlug);
-                    mKinds.put(nodeSlug, child.getKind());
+                    nodeObject.setNodeSlug(nodeSlug);
                     ApiClient.get().getTopicData(nodeSlug, new Callback<TopicData>() {
                         @Override
                         public void success(final TopicData topicData, Response response) {
-                            mTitles.put(nodeSlug, topicData.getTitle());
-                            mDescriptions.put(nodeSlug, topicData.getDescription());
+                            nodeObject.setTitle(topicData.getTitle());
+                            nodeObject.setDescription(topicData.getDescription());
                             if (mTopicItemAdapter == null) {
                                 setupAdapter();
                             } else {
@@ -129,6 +121,7 @@ public class TopicFragment extends Fragment {
 
                         }
                     });
+                    mNodeObjects.add(nodeObject);
                 }
             }
 
@@ -142,29 +135,30 @@ public class TopicFragment extends Fragment {
             public void success(List<VideoData> videoDataList, Response response) {
                 for (VideoData videoData : videoDataList) {
                     String nodeSlug = videoData.getNodeSlug();
-                    mNodeSlugs.add(nodeSlug);
-                    mKinds.put(nodeSlug, videoData.getKind());
-                    mTitles.put(nodeSlug, videoData.getTitle());
-                    mDescriptions.put(nodeSlug, videoData.getDescription());
+                    NodeObject nodeObject = new NodeObject();
+                    nodeObject.setNodeSlug(nodeSlug);
+                    nodeObject.setTitle(videoData.getTitle());
+                    nodeObject.setDescription(videoData.getDescription());
                     int duration = videoData.getDuration();
                     String remainder = Integer.toString(duration % 60);
                     String seconds = (Integer.parseInt(remainder) < 10) ? "0" + remainder : remainder;
-                    mDurations.put(nodeSlug, Integer.toString(duration / 60) +
+                    nodeObject.setDuration(Integer.toString(duration / 60) +
                             ":" + seconds);
                     try {
-                        mDatesAdded.put(nodeSlug, new SimpleDateFormat("yyyy-MM-dd")
+                        nodeObject.setDateAdded(new SimpleDateFormat("yyyy-MM-dd")
                                 .parse(videoData.getDateAdded().substring(0, 10)));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    mIds.put(nodeSlug, videoData.getYoutubeId());
-                    mImageUrls.put(nodeSlug, videoData.getImageUrl());
-                    mDownloadUrls.put(nodeSlug, videoData.getDownloadUrls().getMp4());
+                    nodeObject.setId(videoData.getYoutubeId());
+                    nodeObject.setImageUrl(videoData.getImageUrl());
+                    nodeObject.setDownloadUrl(videoData.getDownloadUrls().getMp4());
                     if (mVideoItemAdapter == null) {
                         setupAdapter();
                     } else {
                         mVideoItemAdapter.notifyDataSetChanged();
                     }
+                    mNodeObjects.add(nodeObject);
                 }
             }
 
@@ -176,17 +170,17 @@ public class TopicFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (mNodeSlugs.get(0).startsWith("v/")) {
-                    String item = mNodeSlugs.get(pos - 1);
+                if (mNodeObjects.get(0).getNodeSlug().startsWith("v/")) {
+                    NodeObject item = mNodeObjects.get(pos - 1);
                     Intent i = new Intent(getActivity(), VideoActivity.class);
-                    i.putExtra(EXTRA_ID, mIds.get(item));
-                    i.putExtra(EXTRA_TITLE, mTitles.get(item));
+                    i.putExtra(EXTRA_ID, item.getId());
+                    i.putExtra(EXTRA_TITLE, item.getTitle());
 
                     startActivity(i);
                 } else {
-                    final String item = mNodeSlugs.get(pos - 1);
+                    final NodeObject item = mNodeObjects.get(pos - 1);
                     final ArrayList<String> nodeSlugs = new ArrayList<String>();
-                    ApiClient.get().getTopicData(item, new Callback<TopicData>() {
+                    ApiClient.get().getTopicData(item.getNodeSlug(), new Callback<TopicData>() {
                         @Override
                         public void success(final TopicData topicData, Response response) {
                             for (Child child : topicData.getChildren()) {
@@ -197,8 +191,8 @@ public class TopicFragment extends Fragment {
                             }
                             if (!nodeSlugs.isEmpty()) {
                                 Intent i = new Intent(getActivity(), SubtopicActivity.class);
-                                i.putExtra(EXTRA_NODE_SLUG, item);
-                                i.putExtra(EXTRA_TITLE, mTitles.get(item));
+                                i.putExtra(EXTRA_NODE_SLUG, item.getNodeSlug());
+                                i.putExtra(EXTRA_TITLE, item.getTitle());
 
                                 startActivity(i);
                             }
@@ -210,6 +204,45 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
+            }
+        });
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long id) {
+                if (mNodeObjects.get(0).getNodeSlug().startsWith("v/")) {
+                    NodeObject item = mNodeObjects.get(pos - 1);
+                    Intent i = new Intent(getActivity(), DownloadService.class);
+                    i.putExtra(EXTRA_URL, item.getDownloadUrl());
+                    i.putExtra(EXTRA_TITLE, item.getTitle());
+                    getActivity().startService(i);
+                } else {
+                    final NodeObject item = mNodeObjects.get(pos - 1);
+                    final ArrayList<String> nodeSlugs = new ArrayList<String>();
+                    ApiClient.get().getTopicData(item.getNodeSlug(), new Callback<TopicData>() {
+                        @Override
+                        public void success(final TopicData topicData, Response response) {
+                            for (Child child : topicData.getChildren()) {
+                                final String nodeSlug = child.getNodeSlug();
+                                if (nodeSlug.startsWith("e/") || nodeSlug.startsWith("a/") ||
+                                        nodeSlug.startsWith("p/")) continue;
+                                nodeSlugs.add(nodeSlug);
+                            }
+                            if (!nodeSlugs.isEmpty()) {
+                                Intent i = new Intent(getActivity(), SubtopicActivity.class);
+                                i.putExtra(EXTRA_NODE_SLUG, item.getNodeSlug());
+                                i.putExtra(EXTRA_TITLE, item.getTitle());
+
+                                startActivity(i);
+                            }
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+                }
+                return true;
             }
         });
 
@@ -231,12 +264,12 @@ public class TopicFragment extends Fragment {
     void setupAdapter() {
         if (getActivity() == null || mListView == null) return;
 
-        if (mNodeSlugs != null) {
-            if (mNodeSlugs.get(0).startsWith("v/")) {
-                mVideoItemAdapter = new VideoItemAdapter(mNodeSlugs);
+        if (mNodeObjects.size() > 0) {
+            if (mNodeObjects.get(0).getNodeSlug().startsWith("v/")) {
+                mVideoItemAdapter = new VideoItemAdapter(mNodeObjects);
                 mListView.setAdapter(mVideoItemAdapter);
             } else {
-                mTopicItemAdapter = new TopicItemAdapter(mNodeSlugs);
+                mTopicItemAdapter = new TopicItemAdapter(mNodeObjects);
                 mListView.setAdapter(mTopicItemAdapter);
             }
         } else {
@@ -244,8 +277,8 @@ public class TopicFragment extends Fragment {
         }
     }
 
-    private class TopicItemAdapter extends ArrayAdapter<String> {
-        public TopicItemAdapter(ArrayList<String> items) {
+    private class TopicItemAdapter extends ArrayAdapter<NodeObject> {
+        public TopicItemAdapter(ArrayList<NodeObject> items) {
             super(getActivity(), 0, items);
         }
 
@@ -256,21 +289,21 @@ public class TopicFragment extends Fragment {
                         .inflate(R.layout.topic_list_item, parent, false);
             }
 
-            String item = getItem(position);
+            NodeObject item = getItem(position);
 
             TextView title = (TextView) convertView.findViewById(R.id.title);
-            title.setText(mTitles.get(item));
+            title.setText(item.getTitle());
 
             TextView description = (TextView) convertView.findViewById(R.id.description);
-            description.setText(mDescriptions.get(item));
+            description.setText(item.getDescription());
 
             return convertView;
         }
     }
 
     @SuppressWarnings("deprecation")
-    private class VideoItemAdapter extends ArrayAdapter<String> {
-        public VideoItemAdapter(ArrayList<String> items) {
+    private class VideoItemAdapter extends ArrayAdapter<NodeObject> {
+        public VideoItemAdapter(ArrayList<NodeObject> items) {
             super(getActivity(), 0, items);
         }
 
@@ -281,18 +314,18 @@ public class TopicFragment extends Fragment {
                         .inflate(R.layout.video_list_item, parent, false);
             }
 
-            String item = getItem(position);
+            NodeObject item = getItem(position);
 
             TextView title = (TextView) convertView.findViewById(R.id.title);
-            title.setText(mTitles.get(item));
+            title.setText(item.getTitle());
 
             TextView description = (TextView) convertView.findViewById(R.id.description);
-            description.setText(mDescriptions.get(item));
+            description.setText(item.getDescription());
 
             TextView dateAdded = (TextView) convertView.findViewById(R.id.dateAdded);
             SimpleDateFormat ft = new SimpleDateFormat("MMMM d, yyyy");
             SpannableString dateAddedText = new SpannableString("Published:  " +
-                    ft.format(mDatesAdded.get(item)));
+                    ft.format(item.getDateAdded()));
             dateAddedText
                     .setSpan(new ForegroundColorSpan(R.color.description_text), 10, dateAddedText.length(), Spannable
                             .SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -300,7 +333,7 @@ public class TopicFragment extends Fragment {
 
             TextView duration = (TextView) convertView.findViewById(R.id.duration);
             SpannableString durationText = new SpannableString("Duration:  " +
-                    mDurations.get(item));
+                    item.getDuration());
             durationText
                     .setSpan(new ForegroundColorSpan(R.color.description_text), 9, durationText.length(), Spannable
                             .SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -315,7 +348,7 @@ public class TopicFragment extends Fragment {
             params.width = width;
             imageView.setLayoutParams(params);
             Picasso.with(getActivity())
-                    .load(mImageUrls.get(item))
+                    .load(item.getImageUrl())
                     .fit()
                     .into(imageView);
 

@@ -2,8 +2,12 @@
 <resources>
 
     <string name="app_name">Khan Academy - Learn Anything</string>
+    <string name="app_note">Long click button to download. Click to watch this video.</string>
+    <string name="app_email">drew.t.pham@gmail.com</string>
     <string name="action_email">Email Developer</string>
+    <string name="action_login">Login</string>
     <string name="desc_list_item_icon">Item Icon</string>
+    <string name="prompt_email">Send Email</string>
     <string name="enter_fullscreen">Enter Fullscreen</string>
     <string name="landscape_fullscreen">Always fullscreen in landscape</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
