@@ -175,34 +175,9 @@ public class TopicFragment extends Fragment {
                     Intent i = new Intent(getActivity(), VideoActivity.class);
                     i.putExtra(EXTRA_ID, item.getId());
                     i.putExtra(EXTRA_TITLE, item.getTitle());
-
                     startActivity(i);
                 } else {
-                    final NodeObject item = mNodeObjects.get(pos - 1);
-                    final ArrayList<String> nodeSlugs = new ArrayList<String>();
-                    ApiClient.get().getTopicData(item.getNodeSlug(), new Callback<TopicData>() {
-                        @Override
-                        public void success(final TopicData topicData, Response response) {
-                            for (Child child : topicData.getChildren()) {
-                                final String nodeSlug = child.getNodeSlug();
-                                if (nodeSlug.startsWith("e/") || nodeSlug.startsWith("a/") ||
-                                        nodeSlug.startsWith("p/")) continue;
-                                nodeSlugs.add(nodeSlug);
-                            }
-                            if (!nodeSlugs.isEmpty()) {
-                                Intent i = new Intent(getActivity(), SubtopicActivity.class);
-                                i.putExtra(EXTRA_NODE_SLUG, item.getNodeSlug());
-                                i.putExtra(EXTRA_TITLE, item.getTitle());
-
-                                startActivity(i);
-                            }
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-
-                        }
-                    });
+                    getSubtopic(pos);
                 }
             }
         });
@@ -216,37 +191,41 @@ public class TopicFragment extends Fragment {
                     i.putExtra(EXTRA_TITLE, item.getTitle());
                     getActivity().startService(i);
                 } else {
-                    final NodeObject item = mNodeObjects.get(pos - 1);
-                    final ArrayList<String> nodeSlugs = new ArrayList<String>();
-                    ApiClient.get().getTopicData(item.getNodeSlug(), new Callback<TopicData>() {
-                        @Override
-                        public void success(final TopicData topicData, Response response) {
-                            for (Child child : topicData.getChildren()) {
-                                final String nodeSlug = child.getNodeSlug();
-                                if (nodeSlug.startsWith("e/") || nodeSlug.startsWith("a/") ||
-                                        nodeSlug.startsWith("p/")) continue;
-                                nodeSlugs.add(nodeSlug);
-                            }
-                            if (!nodeSlugs.isEmpty()) {
-                                Intent i = new Intent(getActivity(), SubtopicActivity.class);
-                                i.putExtra(EXTRA_NODE_SLUG, item.getNodeSlug());
-                                i.putExtra(EXTRA_TITLE, item.getTitle());
-
-                                startActivity(i);
-                            }
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-
-                        }
-                    });
+                    getSubtopic(pos);
                 }
                 return true;
             }
         });
 
         return v;
+    }
+
+    private void getSubtopic(int pos) {
+        final NodeObject item = mNodeObjects.get(pos - 1);
+        final ArrayList<String> nodeSlugs = new ArrayList<String>();
+        ApiClient.get().getTopicData(item.getNodeSlug(), new Callback<TopicData>() {
+            @Override
+            public void success(final TopicData topicData, Response response) {
+                for (Child child : topicData.getChildren()) {
+                    final String nodeSlug = child.getNodeSlug();
+                    if (nodeSlug.startsWith("e/") || nodeSlug.startsWith("a/") ||
+                            nodeSlug.startsWith("p/")) continue;
+                    nodeSlugs.add(nodeSlug);
+                }
+                if (!nodeSlugs.isEmpty()) {
+                    Intent i = new Intent(getActivity(), SubtopicActivity.class);
+                    i.putExtra(EXTRA_NODE_SLUG, item.getNodeSlug());
+                    i.putExtra(EXTRA_TITLE, item.getTitle());
+
+                    startActivity(i);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
