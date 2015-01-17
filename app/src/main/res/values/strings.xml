@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Khan Academy - Learn Anything</string>
+    <string name="app_name">Viewer for Khan Academy</string>
     <string name="app_note">Long click button to download. Click to watch this video.</string>
     <string name="app_email">drew.t.pham@gmail.com</string>
     <string name="action_email">Email Developer</string>
