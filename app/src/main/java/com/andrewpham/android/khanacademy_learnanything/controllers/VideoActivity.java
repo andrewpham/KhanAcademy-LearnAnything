@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
-import com.andrewpham.android.khanacademy_learnanything.DeveloperKey;
 import com.andrewpham.android.khanacademy_learnanything.R;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;

@@ -1,13 +1,19 @@
 package com.andrewpham.android.khanacademy_learnanything.service;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.andrewpham.android.khanacademy_learnanything.R;
+import com.andrewpham.android.khanacademy_learnanything.controllers.HomeActivity;
 import com.andrewpham.android.khanacademy_learnanything.controllers.TopicFragment;
 
 import java.io.File;
@@ -23,6 +29,7 @@ public class DownloadService extends IntentService {
     public static final String TAG = "DownloadService";
 
     Handler mHandler;
+    String mFilename;
 
     public DownloadService() {
         super(TAG);
@@ -39,9 +46,9 @@ public class DownloadService extends IntentService {
         if (!isNetworkAvailable) return;
 
         String s = intent.getStringExtra(TopicFragment.EXTRA_URL);
-        String filename = intent.getStringExtra(TopicFragment.EXTRA_TITLE);
+        mFilename = intent.getStringExtra(TopicFragment.EXTRA_TITLE);
 
-        download(s, filename);
+        download(s, mFilename);
     }
 
     private void download(String s, String filename) {
@@ -77,7 +84,21 @@ public class DownloadService extends IntentService {
             in.close();
             fos.close();
 
-            mHandler.post(new DisplayToast(this, "Download complete."));
+            PendingIntent pi = PendingIntent
+                    .getActivity(this, 0, new Intent(this, HomeActivity.class), 0);
+
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.ic_action_name)
+                    .setContentTitle("Download complete")
+                    .setContentText(mFilename)
+                    .setContentIntent(pi)
+                    .setAutoCancel(true)
+                    .build();
+
+            NotificationManager notificationManager = (NotificationManager)
+                    getSystemService(NOTIFICATION_SERVICE);
+
+            notificationManager.notify(0, notification);
         } catch (Exception e) {
             e.printStackTrace();
         }

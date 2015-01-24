@@ -328,6 +328,7 @@ public class TopicFragment extends Fragment {
             imageView.setLayoutParams(params);
             Picasso.with(getActivity())
                     .load(item.getImageUrl())
+                    .transform(new RoundedTransformation(23, 0))
                     .fit()
                     .into(imageView);
 
