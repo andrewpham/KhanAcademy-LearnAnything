@@ -179,15 +179,15 @@ public class TopicActivity extends FragmentActivity
         }
 
         switch (item.getItemId()) {
-            case R.id.action_login:
-                try {
-                    Intent i = new Intent(getApplicationContext(), WebpageActivity.class);
-                    i.setData(Uri.parse(OAuthClient.initialize()));
-                    startActivity(i);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return true;
+//            case R.id.action_login:
+//                try {
+//                    Intent i = new Intent(getApplicationContext(), WebpageActivity.class);
+//                    i.setData(Uri.parse(OAuthClient.initialize()));
+//                    startActivity(i);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                return true;
             case R.id.action_email:
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setData(Uri.parse("mailto:"));

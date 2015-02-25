@@ -2,6 +2,7 @@ package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
+import com.andrewpham.android.khanacademy_learnanything.exercise_model.ExerciseData;
 import com.andrewpham.android.khanacademy_learnanything.node_object.NodeObject;
 import com.andrewpham.android.khanacademy_learnanything.service.DownloadService;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
@@ -167,33 +169,41 @@ public class TopicFragment extends Fragment {
 
             }
         });
+        ApiClient.get().getTopicExercises(mNodeSlug, new Callback<List<ExerciseData>>() {
+            @Override
+            public void success(List<ExerciseData> exerciseDataList, Response response) {
+                for (ExerciseData exerciseData : exerciseDataList) {
+                    String nodeSlug = exerciseData.getNodeSlug();
+                    NodeObject nodeObject = new NodeObject();
+                    nodeObject.setNodeSlug(nodeSlug);
+                    nodeObject.setTitle(exerciseData.getTitle());
+                    nodeObject.setDescription(exerciseData.getDescription());
+                    try {
+                        nodeObject.setDateAdded(new SimpleDateFormat("yyyy-MM-dd")
+                                .parse(exerciseData.getCreationDate().substring(0, 10)));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    nodeObject.setImageUrl(exerciseData.getImageUrl256());
+                    nodeObject.setKaUrl(exerciseData.getKaUrl());
+                    if (mVideoItemAdapter == null) {
+                        setupAdapter();
+                    } else {
+                        mVideoItemAdapter.notifyDataSetChanged();
+                    }
+                    mNodeObjects.add(nodeObject);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (mNodeObjects.get(0).getNodeSlug().startsWith("v/")) {
-                    NodeObject item = mNodeObjects.get(pos - 1);
-                    Intent i = new Intent(getActivity(), VideoActivity.class);
-                    i.putExtra(EXTRA_ID, item.getId());
-                    i.putExtra(EXTRA_TITLE, item.getTitle());
-                    startActivity(i);
-                } else {
-                    getSubtopic(pos);
-                }
-            }
-        });
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (mNodeObjects.get(0).getNodeSlug().startsWith("v/")) {
-                    NodeObject item = mNodeObjects.get(pos - 1);
-                    Intent i = new Intent(getActivity(), DownloadService.class);
-                    i.putExtra(EXTRA_URL, item.getDownloadUrl());
-                    i.putExtra(EXTRA_TITLE, item.getTitle());
-                    getActivity().startService(i);
-                } else {
-                    getSubtopic(pos);
-                }
-                return true;
+                getSubtopic(pos);
             }
         });
 
@@ -244,7 +254,8 @@ public class TopicFragment extends Fragment {
         if (getActivity() == null || mListView == null) return;
 
         if (mNodeObjects.size() > 0) {
-            if (mNodeObjects.get(0).getNodeSlug().startsWith("v/")) {
+            if (mNodeObjects.get(0).getNodeSlug().startsWith("v/") ||
+                    mNodeObjects.get(0).getNodeSlug().startsWith("e/")) {
                 mVideoItemAdapter = new VideoItemAdapter(mNodeObjects);
                 mListView.setAdapter(mVideoItemAdapter);
             } else {
@@ -261,20 +272,26 @@ public class TopicFragment extends Fragment {
             super(getActivity(), 0, items);
         }
 
+        ViewHolder holder;
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater()
                         .inflate(R.layout.topic_list_item, parent, false);
+                holder = new ViewHolder();
+                holder.title = (TextView) convertView.findViewById(R.id.title);
+                holder.description = (TextView) convertView.findViewById(R.id.description);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
 
             NodeObject item = getItem(position);
 
-            TextView title = (TextView) convertView.findViewById(R.id.title);
-            title.setText(item.getTitle());
+            holder.title.setText(item.getTitle());
 
-            TextView description = (TextView) convertView.findViewById(R.id.description);
-            description.setText(item.getDescription());
+            holder.description.setText(item.getDescription());
 
             return convertView;
         }
@@ -286,54 +303,126 @@ public class TopicFragment extends Fragment {
             super(getActivity(), 0, items);
         }
 
+        ViewHolder holder;
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater()
                         .inflate(R.layout.video_list_item, parent, false);
+                holder = new ViewHolder();
+                holder.title = (TextView) convertView.findViewById(R.id.title);
+                holder.description = (TextView) convertView.findViewById(R.id.description);
+                holder.dateAdded = (TextView) convertView.findViewById(R.id.dateAdded);
+                holder.duration = (TextView) convertView.findViewById(R.id.duration);
+                holder.imageView = (ImageView) convertView
+                        .findViewById(R.id.list_item_imageView);
+                holder.note = (TextView) convertView.findViewById(R.id.note);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
 
-            NodeObject item = getItem(position);
+            final NodeObject item = getItem(position);
 
-            TextView title = (TextView) convertView.findViewById(R.id.title);
-            title.setText(item.getTitle());
+            holder.description.setText(item.getDescription());
 
-            TextView description = (TextView) convertView.findViewById(R.id.description);
-            description.setText(item.getDescription());
-
-            TextView dateAdded = (TextView) convertView.findViewById(R.id.dateAdded);
             SimpleDateFormat ft = new SimpleDateFormat("MMMM d, yyyy");
             SpannableString dateAddedText = new SpannableString("Published:  " +
                     ft.format(item.getDateAdded()));
             dateAddedText
                     .setSpan(new ForegroundColorSpan(R.color.description_text), 10, dateAddedText.length(), Spannable
                             .SPAN_EXCLUSIVE_EXCLUSIVE);
-            dateAdded.setText(dateAddedText);
+            holder.dateAdded.setText(dateAddedText);
 
-            TextView duration = (TextView) convertView.findViewById(R.id.duration);
-            SpannableString durationText = new SpannableString("Duration:  " +
-                    item.getDuration());
-            durationText
-                    .setSpan(new ForegroundColorSpan(R.color.description_text), 9, durationText.length(), Spannable
-                            .SPAN_EXCLUSIVE_EXCLUSIVE);
-            duration.setText(durationText);
+            ViewGroup.LayoutParams params = holder.imageView.getLayoutParams();
 
-            Display display = getActivity().getWindowManager().getDefaultDisplay();
-            int width = display.getWidth();
-            ImageView imageView = (ImageView) convertView
-                    .findViewById(R.id.list_item_imageView);
-            ViewGroup.LayoutParams params = imageView.getLayoutParams();
-            params.height = (int) (width * 297. / 396);
-            params.width = width;
-            imageView.setLayoutParams(params);
-            Picasso.with(getActivity())
-                    .load(item.getImageUrl())
-                    .transform(new RoundedTransformation(23, 0))
-                    .fit()
-                    .into(imageView);
+            if (item.getNodeSlug().startsWith("v/")) {
+                holder.title.setText("Video:  " + item.getTitle());
+
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), VideoActivity.class);
+                        i.putExtra(EXTRA_ID, item.getId());
+                        i.putExtra(EXTRA_TITLE, item.getTitle());
+                        startActivity(i);
+                    }
+                });
+
+                convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Intent i = new Intent(getActivity(), DownloadService.class);
+                        i.putExtra(EXTRA_URL, item.getDownloadUrl());
+                        i.putExtra(EXTRA_TITLE, item.getTitle());
+                        getActivity().startService(i);
+                        return true;
+                    }
+                });
+
+                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                int width = display.getWidth();
+                params.height = (int) (width * 297. / 396);
+                params.width = width;
+                holder.imageView.setLayoutParams(params);
+                Picasso.with(getActivity())
+                        .load(item.getImageUrl())
+                        .transform(new RoundedTransformation(23, 0))
+                        .fit()
+                        .into(holder.imageView);
+
+                holder.note.setText(R.string.app_note);
+
+                SpannableString durationText = new SpannableString("Duration:  " +
+                        item.getDuration());
+                durationText
+                        .setSpan(new ForegroundColorSpan(R.color.description_text), 9, durationText.length(), Spannable
+                                .SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.duration.setText(durationText);
+            } else {
+                holder.title.setText("Exercise:  " + item.getTitle());
+
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), WebpageActivity.class);
+                        i.setData(Uri.parse(item.getKaUrl()));
+                        startActivity(i);
+                    }
+                });
+
+                convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Intent i = new Intent(getActivity(), WebpageActivity.class);
+                        i.setData(Uri.parse(item.getKaUrl()));
+                        startActivity(i);
+                        return true;
+                    }
+                });
+
+                params.height = 0;
+                params.width = 0;
+                holder.imageView.setLayoutParams(params);
+                holder.imageView.setImageDrawable(null);
+
+                holder.note.setText("");
+
+                holder.duration.setText("");
+            }
 
             return convertView;
         }
+    }
+
+    static class ViewHolder {
+        TextView title;
+        TextView description;
+        TextView dateAdded;
+        TextView duration;
+        ImageView imageView;
+        TextView note;
     }
 
 }

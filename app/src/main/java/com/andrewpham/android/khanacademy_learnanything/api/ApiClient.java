@@ -1,5 +1,6 @@
 package com.andrewpham.android.khanacademy_learnanything.api;
 
+import com.andrewpham.android.khanacademy_learnanything.exercise_model.ExerciseData;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.andrewpham.android.khanacademy_learnanything.video_model.VideoData;
 
@@ -31,6 +32,9 @@ public class ApiClient {
 
         @GET("/topic/{topic_slug}/videos")
         void getTopicVideos(@Path("topic_slug") String topic_slug, Callback<List<VideoData>> callback);
+
+        @GET("/topic/{topic_slug}/exercises")
+        void getTopicExercises(@Path("topic_slug") String topic_slug, Callback<List<ExerciseData>> callback);
     }
 
 }

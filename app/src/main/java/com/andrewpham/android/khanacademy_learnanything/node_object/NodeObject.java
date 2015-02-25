@@ -15,6 +15,7 @@ public class NodeObject {
     private String id;
     private String imageUrl;
     private String downloadUrl;
+    private String kaUrl;
 
     public String getNodeSlug() {
         return nodeSlug;
@@ -78,6 +79,14 @@ public class NodeObject {
 
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
+    }
+
+    public String getKaUrl() {
+        return kaUrl;
+    }
+
+    public void setKaUrl(String kaUrl) {
+        this.kaUrl = kaUrl;
     }
 
 }

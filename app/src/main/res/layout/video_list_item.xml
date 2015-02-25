@@ -17,18 +17,18 @@
         android:textColor="@color/fragment_text"
         android:textStyle="italic" />
 
-    <TextView
-        android:layout_toRightOf="@id/title"
-        android:id="@+id/videoCount"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="14sp"
-        android:paddingTop="10sp"
-        android:paddingBottom="10sp"
-        android:paddingLeft="10sp"
-        android:paddingRight="10sp"
-        android:textColor="@color/fragment_text"
-        android:textStyle="italic" />
+    <!--<TextView-->
+        <!--android:layout_toRightOf="@id/title"-->
+        <!--android:id="@+id/videoCount"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:textSize="14sp"-->
+        <!--android:paddingTop="10sp"-->
+        <!--android:paddingBottom="10sp"-->
+        <!--android:paddingLeft="10sp"-->
+        <!--android:paddingRight="10sp"-->
+        <!--android:textColor="@color/fragment_text"-->
+        <!--android:textStyle="italic" />-->
 
     <TextView
         android:layout_below="@id/title"
@@ -85,7 +85,6 @@
 
     <TextView
         android:id="@+id/note"
-        android:text="@string/app_note"
         android:layout_below="@id/list_item_imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

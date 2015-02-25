@@ -160,15 +160,15 @@ public class HomeActivity extends Activity {
         }
 
         switch (item.getItemId()) {
-            case R.id.action_login:
-                try {
-                    Intent i = new Intent(mContext, WebpageActivity.class);
-                    i.setData(Uri.parse(OAuthClient.initialize()));
-                    startActivity(i);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return true;
+//            case R.id.action_login:
+//                try {
+//                    Intent i = new Intent(mContext, WebpageActivity.class);
+//                    i.setData(Uri.parse(OAuthClient.initialize()));
+//                    startActivity(i);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                return true;
             case R.id.action_email:
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setData(Uri.parse("mailto:"));
@@ -216,20 +216,29 @@ public class HomeActivity extends Activity {
             super(getApplicationContext(), 0, items);
         }
 
+        ViewHolder holder;
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getLayoutInflater()
                         .inflate(R.layout.grid_item, parent, false);
+                holder = new ViewHolder();
+                holder.textView = (TextView) convertView.findViewById(R.id.title);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
 
             String item = getItem(position);
-            TextView textView = (TextView) convertView
-                    .findViewById(R.id.title);
-            textView.setText(item);
+            holder.textView.setText(item);
 
             return convertView;
         }
+    }
+
+    static class ViewHolder {
+        TextView textView;
     }
 
     public void getTopic(int position) {
