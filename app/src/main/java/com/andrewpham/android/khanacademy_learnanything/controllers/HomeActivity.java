@@ -11,8 +11,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -147,6 +150,15 @@ public class HomeActivity extends Activity {
         }
     }
 
+    private boolean isAClick(float startX, float endX, float startY, float endY) {
+        float differenceX = Math.abs(startX - endX);
+        float differenceY = Math.abs(startY - endY);
+        if (differenceX > 10 || differenceY > 10) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
@@ -219,7 +231,7 @@ public class HomeActivity extends Activity {
         ViewHolder holder;
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getLayoutInflater()
                         .inflate(R.layout.grid_item, parent, false);
@@ -232,6 +244,40 @@ public class HomeActivity extends Activity {
 
             String item = getItem(position);
             holder.textView.setText(item);
+
+            convertView.setOnTouchListener(new View.OnTouchListener() {
+                private float startX;
+                private float startY;
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            startX = event.getX();
+                            startY = event.getY();
+                            v.setBackgroundResource(R.drawable.list_item_shape_pressed);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
+                                    v.getPaddingRight(), v.getPaddingBottom() - 6);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            float endX = event.getX();
+                            float endY = event.getY();
+                            v.setBackgroundResource(R.drawable.list_item_shape_normal);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
+                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
+                            if (isAClick(startX, endX, startY, endY)) {
+                                getTopic(position);
+                            }
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            v.setBackgroundResource(R.drawable.list_item_shape_normal);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
+                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
+                            break;
+                    }
+                    return true;
+                }
+            });
 
             return convertView;
         }

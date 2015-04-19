@@ -19,7 +19,7 @@
         </shape>
     </item>
 
-    <item android:bottom="2dp">
+    <item android:bottom="6px">
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
 
