@@ -8,8 +8,8 @@ android {
         applicationId "com.andrewpham.android.khanacademy_learnanything"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 12
-        versionName "1.5.6"
+        versionCode 14
+        versionName "1.5.8"
     }
     buildTypes {
         release {
@@ -25,7 +25,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
 }
