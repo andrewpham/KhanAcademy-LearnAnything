@@ -58,6 +58,7 @@ public class TopicFragment extends Fragment {
     public static final String EXTRA_URL = "com.andrewpham.android.khanacademy_learnanything.controllers.url";
 
     private static final String NODE_SLUG_TAG = "NodeSlugId";
+    private static final int DELAY_MILLIS = 1000;
     private String mNodeSlug;
     private ArrayList<NodeObject> mNodeObjects = new ArrayList<NodeObject>();
 
@@ -445,7 +446,7 @@ public class TopicFragment extends Fragment {
                                 v.setBackgroundResource(R.drawable.list_item_shape_pressed);
                                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
                                         v.getPaddingRight(), v.getPaddingBottom() - 6);
-                                mHandler.postDelayed(mLongPressed, 1000);
+                                mHandler.postDelayed(mLongPressed, DELAY_MILLIS);
                                 break;
                             case MotionEvent.ACTION_UP:
                                 float endX = event.getX();
