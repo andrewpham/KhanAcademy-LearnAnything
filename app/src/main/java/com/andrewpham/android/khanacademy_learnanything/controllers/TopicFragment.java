@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.text.Spannable;
@@ -11,6 +12,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -379,26 +381,26 @@ public class TopicFragment extends Fragment {
             if (item.getNodeSlug().startsWith("v/")) {
                 holder.title.setText("Video:  " + item.getTitle());
 
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(getActivity(), VideoActivity.class);
-                        i.putExtra(EXTRA_ID, item.getId());
-                        i.putExtra(EXTRA_TITLE, item.getTitle());
-                        startActivity(i);
-                    }
-                });
-
-                convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        Intent i = new Intent(getActivity(), DownloadService.class);
-                        i.putExtra(EXTRA_URL, item.getDownloadUrl());
-                        i.putExtra(EXTRA_TITLE, item.getTitle());
-                        getActivity().startService(i);
-                        return true;
-                    }
-                });
+//                convertView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent i = new Intent(getActivity(), VideoActivity.class);
+//                        i.putExtra(EXTRA_ID, item.getId());
+//                        i.putExtra(EXTRA_TITLE, item.getTitle());
+//                        startActivity(i);
+//                    }
+//                });
+//
+//                convertView.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        Intent i = new Intent(getActivity(), DownloadService.class);
+//                        i.putExtra(EXTRA_URL, item.getDownloadUrl());
+//                        i.putExtra(EXTRA_TITLE, item.getTitle());
+//                        getActivity().startService(i);
+//                        return true;
+//                    }
+//                });
 
                 Display display = getActivity().getWindowManager().getDefaultDisplay();
                 int width = display.getWidth();
@@ -419,27 +421,64 @@ public class TopicFragment extends Fragment {
                         .setSpan(new ForegroundColorSpan(R.color.description_text), 9, durationText.length(), Spannable
                                 .SPAN_EXCLUSIVE_EXCLUSIVE);
                 holder.duration.setText(durationText);
-            } else {
-                holder.title.setText("Exercise:  " + item.getTitle());
 
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(getActivity(), WebpageActivity.class);
-                        i.setData(Uri.parse(item.getKaUrl()));
-                        startActivity(i);
-                    }
-                });
+                convertView.setOnTouchListener(new View.OnTouchListener() {
+                    private float startX;
+                    private float startY;
 
-                convertView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
-                    public boolean onLongClick(View v) {
-                        Intent i = new Intent(getActivity(), WebpageActivity.class);
-                        i.setData(Uri.parse(item.getKaUrl()));
-                        startActivity(i);
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                startX = event.getX();
+                                startY = event.getY();
+                                v.setBackgroundResource(R.drawable.list_item_shape_pressed);
+                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
+                                        v.getPaddingRight(), v.getPaddingBottom() - 6);
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                float endX = event.getX();
+                                float endY = event.getY();
+                                v.setBackgroundResource(R.drawable.list_item_shape_normal);
+                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
+                                        v.getPaddingRight(), v.getPaddingBottom() + 6);
+                                if (isAClick(startX, endX, startY, endY)) {
+                                    Intent i = new Intent(getActivity(), VideoActivity.class);
+                                    i.putExtra(EXTRA_ID, item.getId());
+                                    i.putExtra(EXTRA_TITLE, item.getTitle());
+                                    startActivity(i);
+                                }
+                                break;
+                            case MotionEvent.ACTION_CANCEL:
+                                v.setBackgroundResource(R.drawable.list_item_shape_normal);
+                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
+                                        v.getPaddingRight(), v.getPaddingBottom() + 6);
+                                break;
+                        }
                         return true;
                     }
                 });
+            } else {
+                holder.title.setText("Exercise:  " + item.getTitle());
+
+//                convertView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent i = new Intent(getActivity(), WebpageActivity.class);
+//                        i.setData(Uri.parse(item.getKaUrl()));
+//                        startActivity(i);
+//                    }
+//                });
+//
+//                convertView.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        Intent i = new Intent(getActivity(), WebpageActivity.class);
+//                        i.setData(Uri.parse(item.getKaUrl()));
+//                        startActivity(i);
+//                        return true;
+//                    }
+//                });
 
                 params.height = 0;
                 params.width = 0;
@@ -449,6 +488,42 @@ public class TopicFragment extends Fragment {
                 holder.note.setText("");
 
                 holder.duration.setText("");
+
+                convertView.setOnTouchListener(new View.OnTouchListener() {
+                    private float startX;
+                    private float startY;
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                startX = event.getX();
+                                startY = event.getY();
+                                v.setBackgroundResource(R.drawable.list_item_shape_pressed);
+                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
+                                        v.getPaddingRight(), v.getPaddingBottom() - 6);
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                float endX = event.getX();
+                                float endY = event.getY();
+                                v.setBackgroundResource(R.drawable.list_item_shape_normal);
+                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
+                                        v.getPaddingRight(), v.getPaddingBottom() + 6);
+                                if (isAClick(startX, endX, startY, endY)) {
+                                    Intent i = new Intent(getActivity(), WebpageActivity.class);
+                                    i.setData(Uri.parse(item.getKaUrl()));
+                                    startActivity(i);
+                                }
+                                break;
+                            case MotionEvent.ACTION_CANCEL:
+                                v.setBackgroundResource(R.drawable.list_item_shape_normal);
+                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
+                                        v.getPaddingRight(), v.getPaddingBottom() + 6);
+                                break;
+                        }
+                        return true;
+                    }
+                });
             }
 
             return convertView;
