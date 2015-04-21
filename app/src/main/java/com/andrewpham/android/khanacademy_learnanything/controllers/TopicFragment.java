@@ -366,6 +366,16 @@ public class TopicFragment extends Fragment {
 
             final NodeObject item = getItem(position);
 
+            final Handler mHandler = new Handler();
+            final Runnable mLongPressed = new Runnable() {
+                public void run() {
+                    Intent i = new Intent(getActivity(), DownloadService.class);
+                    i.putExtra(EXTRA_URL, item.getDownloadUrl());
+                    i.putExtra(EXTRA_TITLE, item.getTitle());
+                    getActivity().startService(i);
+                }
+            };
+
             holder.description.setText(item.getDescription());
 
             SimpleDateFormat ft = new SimpleDateFormat("MMMM d, yyyy");
@@ -435,6 +445,7 @@ public class TopicFragment extends Fragment {
                                 v.setBackgroundResource(R.drawable.list_item_shape_pressed);
                                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
                                         v.getPaddingRight(), v.getPaddingBottom() - 6);
+                                mHandler.postDelayed(mLongPressed, 1000);
                                 break;
                             case MotionEvent.ACTION_UP:
                                 float endX = event.getX();
@@ -442,6 +453,7 @@ public class TopicFragment extends Fragment {
                                 v.setBackgroundResource(R.drawable.list_item_shape_normal);
                                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
                                         v.getPaddingRight(), v.getPaddingBottom() + 6);
+                                mHandler.removeCallbacks(mLongPressed);
                                 if (isAClick(startX, endX, startY, endY)) {
                                     Intent i = new Intent(getActivity(), VideoActivity.class);
                                     i.putExtra(EXTRA_ID, item.getId());
@@ -453,6 +465,7 @@ public class TopicFragment extends Fragment {
                                 v.setBackgroundResource(R.drawable.list_item_shape_normal);
                                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
                                         v.getPaddingRight(), v.getPaddingBottom() + 6);
+                                mHandler.removeCallbacks(mLongPressed);
                                 break;
                         }
                         return true;
