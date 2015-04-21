@@ -130,12 +130,6 @@ public class HomeActivity extends Activity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mGridView = (GridView) findViewById(R.id.gridView);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getTopic(position);
-            }
-        });
         mGridView.setAdapter(new GridAdapter(mItems));
     }
 

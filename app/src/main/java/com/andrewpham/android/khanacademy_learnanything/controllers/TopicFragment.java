@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -201,18 +202,21 @@ public class TopicFragment extends Fragment {
 
             }
         });
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                getSubtopic(pos);
-            }
-        });
 
         return v;
     }
 
+    private boolean isAClick(float startX, float endX, float startY, float endY) {
+        float differenceX = Math.abs(startX - endX);
+        float differenceY = Math.abs(startY - endY);
+        if (differenceX > 10 || differenceY > 10) {
+            return false;
+        }
+        return true;
+    }
+
     private void getSubtopic(int pos) {
-        final NodeObject item = mNodeObjects.get(pos - 1);
+        final NodeObject item = mNodeObjects.get(pos);
         final ArrayList<String> nodeSlugs = new ArrayList<String>();
         ApiClient.get().getTopicData(item.getNodeSlug(), new Callback<TopicData>() {
             @Override
@@ -276,7 +280,7 @@ public class TopicFragment extends Fragment {
         ViewHolder holder;
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater()
                         .inflate(R.layout.topic_list_item, parent, false);
@@ -293,6 +297,40 @@ public class TopicFragment extends Fragment {
             holder.title.setText(item.getTitle());
 
             holder.description.setText(item.getDescription());
+
+            convertView.setOnTouchListener(new View.OnTouchListener() {
+                private float startX;
+                private float startY;
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            startX = event.getX();
+                            startY = event.getY();
+                            v.setBackgroundResource(R.drawable.list_item_shape_pressed);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
+                                    v.getPaddingRight(), v.getPaddingBottom() - 6);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            float endX = event.getX();
+                            float endY = event.getY();
+                            v.setBackgroundResource(R.drawable.list_item_shape_normal);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
+                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
+                            if (isAClick(startX, endX, startY, endY)) {
+                                getSubtopic(position);
+                            }
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            v.setBackgroundResource(R.drawable.list_item_shape_normal);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
+                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
+                            break;
+                    }
+                    return true;
+                }
+            });
 
             return convertView;
         }
