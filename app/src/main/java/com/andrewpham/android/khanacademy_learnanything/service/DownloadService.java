@@ -88,7 +88,7 @@ public class DownloadService extends IntentService {
                     .getActivity(this, 0, new Intent(this, HomeActivity.class), 0);
 
             Notification notification = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_action_name)
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentTitle("Download complete")
                     .setContentText(mFilename)
                     .setContentIntent(pi)
