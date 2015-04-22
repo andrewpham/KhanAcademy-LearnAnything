@@ -8,7 +8,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,7 +23,6 @@ import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
 import com.andrewpham.android.khanacademy_learnanything.adapters.TabsPagerAdapter;
 import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
-import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 
 import java.util.ArrayList;
 
@@ -118,7 +117,6 @@ public class TopicActivity extends FragmentActivity
 
         mDrawerToggle = new ActionBarDrawerToggle(this,
                 mDrawerLayout,
-                R.drawable.ic_drawer,
                 R.string.app_name,
                 R.string.app_name) {
             public void onDrawerClosed(View view) {

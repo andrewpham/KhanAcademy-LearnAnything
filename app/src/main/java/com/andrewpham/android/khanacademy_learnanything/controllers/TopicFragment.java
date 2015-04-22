@@ -10,15 +10,12 @@ import android.support.v4.app.NavUtils;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -392,27 +389,6 @@ public class TopicFragment extends Fragment {
             if (item.getNodeSlug().startsWith("v/")) {
                 holder.title.setText("Video:  " + item.getTitle());
 
-//                convertView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent i = new Intent(getActivity(), VideoActivity.class);
-//                        i.putExtra(EXTRA_ID, item.getId());
-//                        i.putExtra(EXTRA_TITLE, item.getTitle());
-//                        startActivity(i);
-//                    }
-//                });
-//
-//                convertView.setOnLongClickListener(new View.OnLongClickListener() {
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        Intent i = new Intent(getActivity(), DownloadService.class);
-//                        i.putExtra(EXTRA_URL, item.getDownloadUrl());
-//                        i.putExtra(EXTRA_TITLE, item.getTitle());
-//                        getActivity().startService(i);
-//                        return true;
-//                    }
-//                });
-
                 Display display = getActivity().getWindowManager().getDefaultDisplay();
                 int width = display.getWidth();
                 params.height = (int) (width * 297. / 396);
@@ -474,25 +450,6 @@ public class TopicFragment extends Fragment {
                 });
             } else {
                 holder.title.setText("Exercise:  " + item.getTitle());
-
-//                convertView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent i = new Intent(getActivity(), WebpageActivity.class);
-//                        i.setData(Uri.parse(item.getKaUrl()));
-//                        startActivity(i);
-//                    }
-//                });
-//
-//                convertView.setOnLongClickListener(new View.OnLongClickListener() {
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        Intent i = new Intent(getActivity(), WebpageActivity.class);
-//                        i.setData(Uri.parse(item.getKaUrl()));
-//                        startActivity(i);
-//                        return true;
-//                    }
-//                });
 
                 params.height = 0;
                 params.width = 0;

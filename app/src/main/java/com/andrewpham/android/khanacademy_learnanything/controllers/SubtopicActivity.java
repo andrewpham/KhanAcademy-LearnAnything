@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.andrewpham.android.khanacademy_learnanything.R;
-import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 
 /**
  * Created by Andrew on 22/09/2014.

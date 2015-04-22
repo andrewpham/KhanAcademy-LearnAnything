@@ -9,10 +9,8 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -28,7 +26,6 @@ import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
-import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 
@@ -114,7 +111,6 @@ public class HomeActivity extends Activity {
 
         mDrawerToggle = new ActionBarDrawerToggle(this,
                 mDrawerLayout,
-                R.drawable.ic_drawer,
                 R.string.app_name,
                 R.string.app_name) {
             public void onDrawerClosed(View view) {
