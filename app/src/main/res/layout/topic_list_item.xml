@@ -7,38 +7,37 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textSize="14sp"
-        android:paddingTop="10sp"
-        android:paddingBottom="10sp"
-        android:paddingLeft="10sp"
-        android:paddingRight="10sp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="14sp"
+        android:paddingLeft="14sp"
+        android:paddingRight="14sp"
+        android:paddingTop="14sp"
         android:textColor="@color/fragment_text"
-        android:textStyle="italic" />
+        android:textSize="18sp" />
 
     <!--<TextView-->
-        <!--android:layout_toRightOf="@id/title"-->
-        <!--android:id="@+id/videoCount"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:textSize="14sp"-->
-        <!--android:paddingTop="10sp"-->
-        <!--android:paddingBottom="10sp"-->
-        <!--android:paddingLeft="10sp"-->
-        <!--android:paddingRight="10sp"-->
-        <!--android:textColor="@color/fragment_text"-->
-        <!--android:textStyle="italic" />-->
+    <!--android:layout_toRightOf="@id/title"-->
+    <!--android:id="@+id/videoCount"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:textSize="14sp"-->
+    <!--android:paddingTop="10sp"-->
+    <!--android:paddingBottom="10sp"-->
+    <!--android:paddingLeft="10sp"-->
+    <!--android:paddingRight="10sp"-->
+    <!--android:textColor="@color/fragment_text"-->
+    <!--android:textStyle="italic" />-->
 
     <TextView
-        android:layout_below="@id/title"
         android:id="@+id/description"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textSize="10sp"
-        android:paddingBottom="20sp"
-        android:paddingLeft="10sp"
-        android:paddingRight="10sp"
-        android:textColor="@color/description_text" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:paddingBottom="24sp"
+        android:paddingLeft="14sp"
+        android:paddingRight="14sp"
+        android:textColor="@color/description_text"
+        android:textSize="14sp" />
 
 </RelativeLayout>
