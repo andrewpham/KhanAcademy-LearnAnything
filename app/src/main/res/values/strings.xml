@@ -3,7 +3,7 @@
 
     <string name="app_name">Viewer for Khan Academy</string>
     <string name="app_note">Long press button to download. Tap to just watch this video.</string>
-    <string name="app_email">drew.t.pham@gmail.com</string>
+    <string name="app_email">andrew.tucker.p@gmail.com</string>
     <string name="action_email">Email Developer</string>
     <string name="action_login">Login</string>
     <string name="desc_list_item_icon">Item Icon</string>
