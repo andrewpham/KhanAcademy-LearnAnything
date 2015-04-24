@@ -70,7 +70,7 @@ public class TopicActivity extends FragmentActivity
         mDrawerList = (ListView) findViewById(R.id.drawerListView);
         mDrawerList.setOnItemClickListener(new SlidingMenuClickListener());
 
-        mNavDrawerItems = new ArrayList<NavDrawerItem>();
+        mNavDrawerItems = new ArrayList<>();
 
         for (int i = 0; i < mTopics.length; i++) {
             mNavDrawerItems.add(new NavDrawerItem(mTopics[i], mIcons.getResourceId(0, -1)));

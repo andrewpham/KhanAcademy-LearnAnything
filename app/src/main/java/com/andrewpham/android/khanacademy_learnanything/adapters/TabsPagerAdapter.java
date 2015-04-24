@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * Created by andrewpham on 8/26/14.
  */
 public class TabsPagerAdapter extends FragmentStatePagerAdapter {
+
     private static int NUM_ITEMS;
     private ArrayList<String> mNodeSlugs;
 
@@ -32,4 +33,5 @@ public class TabsPagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return NUM_ITEMS;
     }
+
 }

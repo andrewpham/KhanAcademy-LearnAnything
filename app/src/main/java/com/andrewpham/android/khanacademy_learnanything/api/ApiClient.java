@@ -12,6 +12,7 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 
 public class ApiClient {
+
     private static KhanAcademyService sKhanAcademyService;
 
     public static KhanAcademyService get() {

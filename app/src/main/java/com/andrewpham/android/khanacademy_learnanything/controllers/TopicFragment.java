@@ -1,36 +1,26 @@
 package com.andrewpham.android.khanacademy_learnanything.controllers;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.andrewpham.android.khanacademy_learnanything.R;
+import com.andrewpham.android.khanacademy_learnanything.adapters.TopicItemAdapter;
+import com.andrewpham.android.khanacademy_learnanything.adapters.VideoItemAdapter;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.exercise_model.ExerciseData;
 import com.andrewpham.android.khanacademy_learnanything.node_object.NodeObject;
-import com.andrewpham.android.khanacademy_learnanything.service.DownloadService;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 import com.andrewpham.android.khanacademy_learnanything.video_model.VideoData;
-import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,11 +43,11 @@ public class TopicFragment extends Fragment {
     public static final String EXTRA_ID =
             "com.andrewpham.android.khanacademy_learnanything.controllers.id";
     public static final String EXTRA_URL = "com.andrewpham.android.khanacademy_learnanything.controllers.url";
+    public static final int DELAY_MILLIS = 1000;
 
     private static final String NODE_SLUG_TAG = "NodeSlugId";
-    private static final int DELAY_MILLIS = 1000;
     private String mNodeSlug;
-    private ArrayList<NodeObject> mNodeObjects = new ArrayList<NodeObject>();
+    private ArrayList<NodeObject> mNodeObjects = new ArrayList<>();
 
     TopicItemAdapter mTopicItemAdapter;
     VideoItemAdapter mVideoItemAdapter;
@@ -206,43 +196,6 @@ public class TopicFragment extends Fragment {
         return v;
     }
 
-    private boolean isAClick(float startX, float endX, float startY, float endY) {
-        float differenceX = Math.abs(startX - endX);
-        float differenceY = Math.abs(startY - endY);
-        if (differenceX > 10 || differenceY > 10) {
-            return false;
-        }
-        return true;
-    }
-
-    private void getSubtopic(int pos) {
-        final NodeObject item = mNodeObjects.get(pos);
-        final ArrayList<String> nodeSlugs = new ArrayList<String>();
-        ApiClient.get().getTopicData(item.getNodeSlug(), new Callback<TopicData>() {
-            @Override
-            public void success(final TopicData topicData, Response response) {
-                for (Child child : topicData.getChildren()) {
-                    final String nodeSlug = child.getNodeSlug();
-                    if (nodeSlug.startsWith("e/") || nodeSlug.startsWith("a/") ||
-                            nodeSlug.startsWith("p/")) continue;
-                    nodeSlugs.add(nodeSlug);
-                }
-                if (!nodeSlugs.isEmpty()) {
-                    Intent i = new Intent(getActivity(), SubtopicActivity.class);
-                    i.putExtra(EXTRA_NODE_SLUG, item.getNodeSlug());
-                    i.putExtra(EXTRA_TITLE, item.getTitle());
-
-                    startActivity(i);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -261,10 +214,10 @@ public class TopicFragment extends Fragment {
         if (mNodeObjects.size() > 0) {
             if (mNodeObjects.get(0).getNodeSlug().startsWith("v/") ||
                     mNodeObjects.get(0).getNodeSlug().startsWith("e/")) {
-                mVideoItemAdapter = new VideoItemAdapter(mNodeObjects);
+                mVideoItemAdapter = new VideoItemAdapter(getActivity(), getActivity(), mNodeObjects);
                 mListView.setAdapter(mVideoItemAdapter);
             } else {
-                mTopicItemAdapter = new TopicItemAdapter(mNodeObjects);
+                mTopicItemAdapter = new TopicItemAdapter(getActivity(), getActivity(), mNodeObjects);
                 mListView.setAdapter(mTopicItemAdapter);
             }
         } else {
@@ -272,245 +225,13 @@ public class TopicFragment extends Fragment {
         }
     }
 
-    private class TopicItemAdapter extends ArrayAdapter<NodeObject> {
-        public TopicItemAdapter(ArrayList<NodeObject> items) {
-            super(getActivity(), 0, items);
+    public static boolean isAClick(float startX, float endX, float startY, float endY) {
+        float differenceX = Math.abs(startX - endX);
+        float differenceY = Math.abs(startY - endY);
+        if (differenceX > 10 || differenceY > 10) {
+            return false;
         }
-
-        ViewHolder holder;
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = getActivity().getLayoutInflater()
-                        .inflate(R.layout.topic_list_item, parent, false);
-                holder = new ViewHolder();
-                holder.title = (TextView) convertView.findViewById(R.id.title);
-                holder.description = (TextView) convertView.findViewById(R.id.description);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            NodeObject item = getItem(position);
-
-            holder.title.setText(item.getTitle());
-
-            holder.description.setText(item.getDescription());
-
-            convertView.setOnTouchListener(new View.OnTouchListener() {
-                private float startX;
-                private float startY;
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            startX = event.getX();
-                            startY = event.getY();
-                            v.setBackgroundResource(R.drawable.list_item_shape_pressed);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() - 6);
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            float endX = event.getX();
-                            float endY = event.getY();
-                            v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
-                            if (isAClick(startX, endX, startY, endY)) {
-                                v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
-                                getSubtopic(position);
-                            }
-                            break;
-                        case MotionEvent.ACTION_CANCEL:
-                            v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
-                            break;
-                    }
-                    return true;
-                }
-            });
-
-            return convertView;
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private class VideoItemAdapter extends ArrayAdapter<NodeObject> {
-        public VideoItemAdapter(ArrayList<NodeObject> items) {
-            super(getActivity(), 0, items);
-        }
-
-        ViewHolder holder;
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = getActivity().getLayoutInflater()
-                        .inflate(R.layout.video_list_item, parent, false);
-                holder = new ViewHolder();
-                holder.title = (TextView) convertView.findViewById(R.id.title);
-                holder.description = (TextView) convertView.findViewById(R.id.description);
-                holder.dateAdded = (TextView) convertView.findViewById(R.id.dateAdded);
-                holder.duration = (TextView) convertView.findViewById(R.id.duration);
-                holder.imageView = (ImageView) convertView
-                        .findViewById(R.id.list_item_imageView);
-                holder.note = (TextView) convertView.findViewById(R.id.note);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            final NodeObject item = getItem(position);
-
-            final Handler mHandler = new Handler();
-            final Runnable mLongPressed = new Runnable() {
-                public void run() {
-                    Intent i = new Intent(getActivity(), DownloadService.class);
-                    i.putExtra(EXTRA_URL, item.getDownloadUrl());
-                    i.putExtra(EXTRA_TITLE, item.getTitle());
-                    getActivity().startService(i);
-                }
-            };
-
-            holder.description.setText(item.getDescription());
-
-            SimpleDateFormat ft = new SimpleDateFormat("MMMM d, yyyy");
-            SpannableString dateAddedText = new SpannableString("Published:  " +
-                    ft.format(item.getDateAdded()));
-            dateAddedText
-                    .setSpan(new ForegroundColorSpan(R.color.description_text), 10, dateAddedText.length(), Spannable
-                            .SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.dateAdded.setText(dateAddedText);
-
-            ViewGroup.LayoutParams params = holder.imageView.getLayoutParams();
-
-            if (item.getNodeSlug().startsWith("v/")) {
-                holder.title.setText("Video:  " + item.getTitle());
-
-                Display display = getActivity().getWindowManager().getDefaultDisplay();
-                int width = display.getWidth();
-                params.height = (int) (width * 297. / 396);
-                params.width = width;
-                holder.imageView.setLayoutParams(params);
-                Picasso.with(getActivity())
-                        .load(item.getImageUrl())
-                        .transform(new RoundedTransformation(23, 0))
-                        .fit()
-                        .into(holder.imageView);
-
-                holder.note.setText(R.string.app_note);
-
-                SpannableString durationText = new SpannableString("Duration:  " +
-                        item.getDuration());
-                durationText
-                        .setSpan(new ForegroundColorSpan(R.color.description_text), 9, durationText.length(), Spannable
-                                .SPAN_EXCLUSIVE_EXCLUSIVE);
-                holder.duration.setText(durationText);
-
-                convertView.setOnTouchListener(new View.OnTouchListener() {
-                    private float startX;
-                    private float startY;
-
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                startX = event.getX();
-                                startY = event.getY();
-                                v.setBackgroundResource(R.drawable.list_item_shape_pressed);
-                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
-                                        v.getPaddingRight(), v.getPaddingBottom() - 6);
-                                mHandler.postDelayed(mLongPressed, DELAY_MILLIS);
-                                break;
-                            case MotionEvent.ACTION_UP:
-                                float endX = event.getX();
-                                float endY = event.getY();
-                                v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                        v.getPaddingRight(), v.getPaddingBottom() + 6);
-                                mHandler.removeCallbacks(mLongPressed);
-                                if (isAClick(startX, endX, startY, endY)) {
-                                    v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
-                                    Intent i = new Intent(getActivity(), VideoActivity.class);
-                                    i.putExtra(EXTRA_ID, item.getId());
-                                    i.putExtra(EXTRA_TITLE, item.getTitle());
-                                    startActivity(i);
-                                }
-                                break;
-                            case MotionEvent.ACTION_CANCEL:
-                                v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                        v.getPaddingRight(), v.getPaddingBottom() + 6);
-                                mHandler.removeCallbacks(mLongPressed);
-                                break;
-                        }
-                        return true;
-                    }
-                });
-            } else {
-                holder.title.setText("Exercise:  " + item.getTitle());
-
-                params.height = 0;
-                params.width = 0;
-                holder.imageView.setLayoutParams(params);
-                holder.imageView.setImageDrawable(null);
-
-                holder.note.setText("");
-
-                holder.duration.setText("");
-
-                convertView.setOnTouchListener(new View.OnTouchListener() {
-                    private float startX;
-                    private float startY;
-
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                startX = event.getX();
-                                startY = event.getY();
-                                v.setBackgroundResource(R.drawable.list_item_shape_pressed);
-                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
-                                        v.getPaddingRight(), v.getPaddingBottom() - 6);
-                                break;
-                            case MotionEvent.ACTION_UP:
-                                float endX = event.getX();
-                                float endY = event.getY();
-                                v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                        v.getPaddingRight(), v.getPaddingBottom() + 6);
-                                if (isAClick(startX, endX, startY, endY)) {
-                                    v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
-                                    Intent i = new Intent(getActivity(), WebpageActivity.class);
-                                    i.setData(Uri.parse(item.getKaUrl()));
-                                    startActivity(i);
-                                }
-                                break;
-                            case MotionEvent.ACTION_CANCEL:
-                                v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                        v.getPaddingRight(), v.getPaddingBottom() + 6);
-                                break;
-                        }
-                        return true;
-                    }
-                });
-            }
-
-            return convertView;
-        }
-    }
-
-    static class ViewHolder {
-        TextView title;
-        TextView description;
-        TextView dateAdded;
-        TextView duration;
-        ImageView imageView;
-        TextView note;
+        return true;
     }
 
 }

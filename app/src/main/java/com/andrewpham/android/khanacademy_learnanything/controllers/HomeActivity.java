@@ -84,13 +84,13 @@ public class HomeActivity extends Activity {
 
         mTitle = mDrawerTitle = getTitle();
         mTopics = getResources().getStringArray(R.array.home_nav_drawer_items);
-        mItems = new ArrayList<String>(Arrays.asList(mTopics));
+        mItems = new ArrayList<>(Arrays.asList(mTopics));
         mIcons = getResources().obtainTypedArray(R.array.home_nav_drawer_icons);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerList = (ListView) findViewById(R.id.drawerListView);
         mDrawerList.setOnItemClickListener(new SlidingMenuClickListener());
 
-        mNavDrawerItems = new ArrayList<NavDrawerItem>();
+        mNavDrawerItems = new ArrayList<>();
 
         for (int i = 0; i < mTopics.length; i++) {
             mNavDrawerItems.add(new NavDrawerItem(mTopics[i], mIcons.getResourceId(0, -1)));
@@ -138,15 +138,6 @@ public class HomeActivity extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             getTopic(position);
         }
-    }
-
-    private boolean isAClick(float startX, float endX, float startY, float endY) {
-        float differenceX = Math.abs(startX - endX);
-        float differenceY = Math.abs(startY - endY);
-        if (differenceX > 10 || differenceY > 10) {
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -255,7 +246,7 @@ public class HomeActivity extends Activity {
                             v.setBackgroundResource(R.drawable.list_item_shape_normal);
                             v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
                                     v.getPaddingRight(), v.getPaddingBottom() + 6);
-                            if (isAClick(startX, endX, startY, endY)) {
+                            if (TopicFragment.isAClick(startX, endX, startY, endY)) {
                                 v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
                                 getTopic(position);
                             }
@@ -280,8 +271,8 @@ public class HomeActivity extends Activity {
 
     public void getTopic(int position) {
         mTopicSlug = TOPIC_SLUGS[position];
-        final ArrayList<String> translatedTitles = new ArrayList<String>();
-        final ArrayList<String> nodeSlugs = new ArrayList<String>();
+        final ArrayList<String> translatedTitles = new ArrayList<>();
+        final ArrayList<String> nodeSlugs = new ArrayList<>();
         ApiClient.get().getTopicData(mTopicSlug, new Callback<TopicData>() {
             @Override
             public void success(TopicData topicData, Response response) {
