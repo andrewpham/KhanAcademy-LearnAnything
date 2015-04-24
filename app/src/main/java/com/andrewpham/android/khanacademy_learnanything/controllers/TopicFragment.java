@@ -319,6 +319,7 @@ public class TopicFragment extends Fragment {
                             v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
                                     v.getPaddingRight(), v.getPaddingBottom() + 6);
                             if (isAClick(startX, endX, startY, endY)) {
+                                v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
                                 getSubtopic(position);
                             }
                             break;
@@ -432,6 +433,7 @@ public class TopicFragment extends Fragment {
                                         v.getPaddingRight(), v.getPaddingBottom() + 6);
                                 mHandler.removeCallbacks(mLongPressed);
                                 if (isAClick(startX, endX, startY, endY)) {
+                                    v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
                                     Intent i = new Intent(getActivity(), VideoActivity.class);
                                     i.putExtra(EXTRA_ID, item.getId());
                                     i.putExtra(EXTRA_TITLE, item.getTitle());
@@ -481,6 +483,7 @@ public class TopicFragment extends Fragment {
                                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
                                         v.getPaddingRight(), v.getPaddingBottom() + 6);
                                 if (isAClick(startX, endX, startY, endY)) {
+                                    v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
                                     Intent i = new Intent(getActivity(), WebpageActivity.class);
                                     i.setData(Uri.parse(item.getKaUrl()));
                                     startActivity(i);

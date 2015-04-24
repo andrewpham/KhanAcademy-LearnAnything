@@ -256,6 +256,7 @@ public class HomeActivity extends Activity {
                             v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
                                     v.getPaddingRight(), v.getPaddingBottom() + 6);
                             if (isAClick(startX, endX, startY, endY)) {
+                                v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
                                 getTopic(position);
                             }
                             break;
