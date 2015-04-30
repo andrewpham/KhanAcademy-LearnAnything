@@ -237,15 +237,15 @@ public class HomeActivity extends Activity {
                             startX = event.getX();
                             startY = event.getY();
                             v.setBackgroundResource(R.drawable.list_item_shape_pressed);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() - 6);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 4,
+                                    v.getPaddingRight(), v.getPaddingBottom() - 4);
                             break;
                         case MotionEvent.ACTION_UP:
                             float endX = event.getX();
                             float endY = event.getY();
                             v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 4,
+                                    v.getPaddingRight(), v.getPaddingBottom() + 4);
                             if (TopicFragment.isAClick(startX, endX, startY, endY)) {
                                 v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
                                 getTopic(position);
@@ -253,8 +253,8 @@ public class HomeActivity extends Activity {
                             break;
                         case MotionEvent.ACTION_CANCEL:
                             v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 4,
+                                    v.getPaddingRight(), v.getPaddingBottom() + 4);
                             break;
                     }
                     return true;

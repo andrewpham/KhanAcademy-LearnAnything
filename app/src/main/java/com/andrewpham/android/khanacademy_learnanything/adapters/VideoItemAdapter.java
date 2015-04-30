@@ -105,7 +105,7 @@ public class VideoItemAdapter extends ArrayAdapter<NodeObject> {
             holder.imageView.setLayoutParams(params);
             Picasso.with(mActivity)
                     .load(item.getImageUrl())
-                    .transform(new RoundedTransformation(23, 0))
+                    .transform(new RoundedTransformation(10, 0))
                     .fit()
                     .into(holder.imageView);
 
@@ -129,16 +129,16 @@ public class VideoItemAdapter extends ArrayAdapter<NodeObject> {
                             startX = event.getX();
                             startY = event.getY();
                             v.setBackgroundResource(R.drawable.list_item_shape_pressed);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() - 6);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + 4,
+                                    v.getPaddingRight(), v.getPaddingBottom() - 4);
                             mHandler.postDelayed(mLongPressed, TopicFragment.DELAY_MILLIS);
                             break;
                         case MotionEvent.ACTION_UP:
                             float endX = event.getX();
                             float endY = event.getY();
                             v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 4,
+                                    v.getPaddingRight(), v.getPaddingBottom() + 4);
                             mHandler.removeCallbacks(mLongPressed);
                             if (TopicFragment.isAClick(startX, endX, startY, endY)) {
                                 v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
@@ -150,8 +150,8 @@ public class VideoItemAdapter extends ArrayAdapter<NodeObject> {
                             break;
                         case MotionEvent.ACTION_CANCEL:
                             v.setBackgroundResource(R.drawable.list_item_shape_normal);
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 6,
-                                    v.getPaddingRight(), v.getPaddingBottom() + 6);
+                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - 4,
+                                    v.getPaddingRight(), v.getPaddingBottom() + 4);
                             mHandler.removeCallbacks(mLongPressed);
                             break;
                     }
