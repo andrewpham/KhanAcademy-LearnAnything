@@ -26,6 +26,7 @@ import com.andrewpham.android.khanacademy_learnanything.R;
 import com.andrewpham.android.khanacademy_learnanything.adapters.NavDrawerListAdapter;
 import com.andrewpham.android.khanacademy_learnanything.api.ApiClient;
 import com.andrewpham.android.khanacademy_learnanything.drawer_model.NavDrawerItem;
+import com.andrewpham.android.khanacademy_learnanything.oauth.OAuthClient;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.Child;
 import com.andrewpham.android.khanacademy_learnanything.topic_model.TopicData;
 

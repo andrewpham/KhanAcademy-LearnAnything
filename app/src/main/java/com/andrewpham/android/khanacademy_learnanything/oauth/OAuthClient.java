@@ -16,11 +16,11 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class OAuthClient {
 
-    private static final String CONSUMER_KEY = "MSEDRueRnLjvzZe7";
-    private static final String CONSUMER_SECRET = "gpkQW95dCDz94ebs";
+    private static final String CONSUMER_KEY = "M6XxPXJ7Tc6NGj9D";
+    private static final String CONSUMER_SECRET = "kXPUmNEANWNTWYSL";
 
-    private static final String REQUEST_URL = "http://www.khanacademy.org/api/auth/request_token";
-    private static final String ACCESS_URL = "http://www.khanacademy.org/api/auth/access_token";
+    private static final String REQUEST_URL = "https://www.khanacademy.org/api/auth2/request_token";
+    private static final String ACCESS_URL = "https://www.khanacademy.org/api/auth2/access_token";
 
     private static Base64 mBase64 = new Base64();
 
