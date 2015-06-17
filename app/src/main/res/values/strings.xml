@@ -5,9 +5,12 @@
     <string name="app_note">Long press button to download. Tap to just watch this video.</string>
     <string name="app_email">andrew.tucker.p@gmail.com</string>
     <string name="action_email">Email Developer</string>
+    <string name="action_folder">Download Folder</string>
+    <string name="action_redirect">Get Solid Explorer</string>
     <string name="action_login">Login</string>
     <string name="desc_list_item_icon">Item Icon</string>
     <string name="prompt_email">Send Email</string>
+    <string name="prompt_folder">Open Folder</string>
     <string name="enter_fullscreen">Enter Fullscreen</string>
     <string name="landscape_fullscreen">Always fullscreen in landscape</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>

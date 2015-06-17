@@ -8,6 +8,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -186,6 +187,16 @@ public class TopicActivity extends FragmentActivity
 //                    e.printStackTrace();
 //                }
 //                return true;
+            case R.id.action_folder:
+                Intent j = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse(Environment.getExternalStorageDirectory()
+                        + "/Android/data/"
+                        + this.getPackageName()
+                        + "/files");
+                j.setDataAndType(uri, "resource/folder");
+
+                startActivity(Intent.createChooser(j, getString(R.string.prompt_folder)));
+                return true;
             case R.id.action_email:
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setData(Uri.parse("mailto:"));
@@ -193,6 +204,13 @@ public class TopicActivity extends FragmentActivity
                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.app_email)});
 
                 startActivity(Intent.createChooser(i, getString(R.string.prompt_email)));
+                return true;
+            case R.id.action_redirect:
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=pl.solidexplorer")));
+                } catch (android.content.ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=pl.solidexplorer")));
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

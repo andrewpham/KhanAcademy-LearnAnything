@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -50,6 +51,16 @@ public class SubtopicActivity extends SingleFragmentActivity {
 //                    e.printStackTrace();
 //                }
 //                return true;
+            case R.id.action_folder:
+                Intent j = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse(Environment.getExternalStorageDirectory()
+                        + "/Android/data/"
+                        + this.getPackageName()
+                        + "/files");
+                j.setDataAndType(uri, "resource/folder");
+
+                startActivity(Intent.createChooser(j, getString(R.string.prompt_folder)));
+                return true;
             case R.id.action_email:
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setData(Uri.parse("mailto:"));
@@ -57,6 +68,13 @@ public class SubtopicActivity extends SingleFragmentActivity {
                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.app_email)});
 
                 startActivity(Intent.createChooser(i, getString(R.string.prompt_email)));
+                return true;
+            case R.id.action_redirect:
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=pl.solidexplorer")));
+                } catch (android.content.ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=pl.solidexplorer")));
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

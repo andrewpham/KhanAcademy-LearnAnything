@@ -2,17 +2,31 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
+        android:id="@+id/action_folder"
+        android:orderInCategory="98"
+        android:showAsAction="never"
+        android:title="@string/action_folder"
+        tools:ignore="AppCompatResource" />
+
+    <item
         android:id="@+id/action_email"
+        android:orderInCategory="99"
+        android:showAsAction="never"
         android:title="@string/action_email"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/action_redirect"
         android:orderInCategory="100"
         android:showAsAction="never"
+        android:title="@string/action_redirect"
         tools:ignore="AppCompatResource" />
 
     <!--<item-->
-        <!--android:id="@+id/action_login"-->
-        <!--android:title="@string/action_login"-->
-        <!--android:orderInCategory="99"-->
-        <!--android:showAsAction="never"-->
-        <!--tools:ignore="AppCompatResource" />-->
+    <!--android:id="@+id/action_login"-->
+    <!--android:title="@string/action_login"-->
+    <!--android:orderInCategory="99"-->
+    <!--android:showAsAction="never"-->
+    <!--tools:ignore="AppCompatResource" />-->
 
 </menu>
