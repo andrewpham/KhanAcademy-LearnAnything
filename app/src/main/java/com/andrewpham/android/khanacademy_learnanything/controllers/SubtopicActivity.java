@@ -65,15 +65,15 @@ public class SubtopicActivity extends SingleFragmentActivity {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setData(Uri.parse("mailto:"));
                 i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.app_email)});
+                i.putExtra(Intent.EXTRA_EMAIL, getString(R.string.app_email));
 
                 startActivity(Intent.createChooser(i, getString(R.string.prompt_email)));
                 return true;
             case R.id.action_redirect:
                 try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=pl.solidexplorer")));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_store_url) + getString(R.string.external_app_name))));
                 } catch (android.content.ActivityNotFoundException e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=pl.solidexplorer")));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.http_url) + getString(R.string.external_app_name))));
                 }
                 return true;
             default:

@@ -4,6 +4,9 @@
     <string name="app_name">Viewer for Khan Academy</string>
     <string name="app_note">Long press button to download. Tap to just watch this video.</string>
     <string name="app_email">andrew.tucker.p@gmail.com</string>
+    <string name="external_app_name">pl.solidexplorer</string>
+    <string name="app_store_url">market://details?id=</string>
+    <string name="http_url">http://play.google.com/store/apps/details?id=</string>
     <string name="action_email">Email Developer</string>
     <string name="action_folder">Download Folder</string>
     <string name="action_redirect">Get Solid Explorer</string>

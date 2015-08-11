@@ -8,8 +8,8 @@ android {
         applicationId "com.andrewpham.android.khanacademy_learnanything"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 21
-        versionName "1.6.5"
+        versionCode 22
+        versionName "1.6.6"
     }
     buildTypes {
         release {
@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
