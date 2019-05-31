@@ -25,7 +25,7 @@ Viewer for Khan Academy
 
 ### How to build
 The latest version of Android Studio should be able to run the code out of the box.  Feel free 
-to shoot me an email at andrew.pham@uwaterloo.ca if that is not the case, and I can run you 
+to shoot me an email at andrew.tucker.p@gmail.com if that is not the case, and I can run you
 through on how to set up the workflow.
 
 ### Authors and contributors
@@ -35,4 +35,4 @@ through on how to set up the workflow.
 [GPL-2.0 License](https://opensource.org/licenses/gpl-2.0.php)
 
 ### Contributing
-If you are a developer, we need your help.  Viewer for Khan Academy is a young project and we have a lot of new features to implement and bugs to fix.  Feel free to refactor the current codebase and improve what we already have.  Once the Android Studio workflow is set, contributing is as easy as changing just a few lines of code.  Feel free to shoot me an email at andrew.pham@uwaterloo.ca to begin a correspondence on how you can help grow the project!
+If you are a developer, we need your help.  Viewer for Khan Academy is a young project and we have a lot of new features to implement and bugs to fix.  Feel free to refactor the current codebase and improve what we already have.  Once the Android Studio workflow is set, contributing is as easy as changing just a few lines of code.  Feel free to shoot me an email at andrew.tucker.p@gmail.com to begin a correspondence on how you can help grow the project!
